@@ -1,0 +1,28 @@
+server:
+  port: 3000
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/
+#    username: root
+#    password: 123456
+  jpa:
+    open-in-view: false
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+    properties:
+      hibernate:
+        format_sql: true
+#  servlet:
+#    multipart:
+#      enabled: true
+#      max-file-size: 128MB
+#      max-request-size: 128MB
+#  resources:
+#    static-locations: classpath:/videos/
+#secretKey: MjlhMTU0MzFiNmUxYzY0MDlkMGYwM2ZhMTE5NGYyNWI1YTIxOTgxMjE5MGYyYzU1NGU2OGM4ZjgxNjRlOWIwN2IxODYxYWY2OGFjNmQ0ZDk2YjY2MDdmYmYzMWZkMGUzNjQzOWU1M2YxODQ2NmM0MTIzNGIwZDE3NWVlZWIzYTk=
