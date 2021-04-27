@@ -1,0 +1,16 @@
+--Create database
+CREATE DATABASE seneca_forum CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+--Create table
+
+CREATE TABLE SIDEBAR_MENU(
+    `sidebar_id` INT AUTO_INCREMENT PRIMARY KEY ,
+    `name` VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE TOPICS(
+     `topic_name` VARCHAR(255) PRIMARY KEY ,
+     `views` INT,
+     `sidebar_id` INT,
+     CONSTRAINT FK_SIDEBAR_TOPICS FOREIGN KEY (sidebar_id) REFERENCES SIDEBAR_MENU(sidebar_id)
+);
