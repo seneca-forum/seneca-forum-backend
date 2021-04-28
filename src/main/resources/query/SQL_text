@@ -9,8 +9,10 @@ CREATE TABLE SIDEBAR_MENU(
 );
 
 CREATE TABLE TOPICS(
-     `topic_name` VARCHAR(255) PRIMARY KEY ,
-     `views` INT,
+     `topic_id` INT PRIMARY KEY AUTO_INCREMENT,
+     `topic_name` VARCHAR(255) NOT NULL ,
+     `views` INT DEFAULT 0,
      `sidebar_id` INT,
      CONSTRAINT FK_SIDEBAR_TOPICS FOREIGN KEY (sidebar_id) REFERENCES SIDEBAR_MENU(sidebar_id)
 );
+
