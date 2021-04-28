@@ -1,6 +1,7 @@
 package com.seneca.senecaforum;
 
-import com.seneca.senecaforum.domain.SidebarMenu;
+import com.seneca.senecaforum.domain.ui.SidebarMenu;
+import com.seneca.senecaforum.domain.ui.Topic;
 import com.seneca.senecaforum.repository.SidebarRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,10 @@ class SenecaForumApplicationTests {
     @Test
     void testSaveSidebarAndTopics(){
         SidebarMenu sidebarMenu = new SidebarMenu();
-        Map<String,Integer> topics = new HashMap<>();
-        topics.put("Assignment Help",0);
-        topics.put("Exam",0);
         sidebarMenu.setName("Forum");
+        Topic topic = Topic.builder().topicName("Assignment Help").build();
+        Set<Topic> topics = new HashSet<>();
+        topics.add(topic);
         sidebarMenu.setTopics(topics);
         sidebarRepository.save(sidebarMenu);
     }
