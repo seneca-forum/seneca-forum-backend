@@ -1,4 +1,4 @@
-package com.seneca.senecaforum.domain.ui;
+package com.seneca.senecaforum.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +19,7 @@ public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "topic_id")
-    private int id;
+    private int topicId;
 
     @Column(name = "topic_name")
     private String topicName;
