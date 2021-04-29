@@ -38,8 +38,14 @@ public class SenecaForumApplicationTests {
 
     @Test
     public void addNewTopic(){
-        Topic topic = Topic.builder().topicName("Exam Prep").build();
-        topicRepository.save(topic);
+        Topic topicExam = Topic.builder().topicName("Exam Prep").build();
+        Topic topicSideProjects = Topic.builder().topicName("Side Projects").build();
+        Topic topicIntern = Topic.builder().topicName("Coop/Internship").build();
+        Topic topicVolun = Topic.builder().topicName("Volunteer").build();
+        Topic topicProgramming = Topic.builder().topicName("Coding Challenges").build();
+        Topic topicJobs = Topic.builder().topicName("Jobs").build();
+        Topic topicDating = Topic.builder().topicName("Dating").build();
+        topicRepository.saveAll(List.of(topicExam,topicDating,topicJobs,topicIntern,topicVolun,topicProgramming,topicSideProjects));
     }
 
     @Test
@@ -53,5 +59,19 @@ public class SenecaForumApplicationTests {
         List<Post> posts = postRepository.findAllByTopicId(1);
         posts.forEach(post -> System.out.println(post.getTitle()));
         String a = "b";
+    }
+
+    @Test public void updateViewByTopicId(){
+        Topic randomTopic = null;
+        try{
+            randomTopic = topicRepository.findById(8).orElseThrow();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        Topic temp = new Topic();
+        randomTopic.setViews(20);
+        topicRepository.save(randomTopic);
     }
 }
