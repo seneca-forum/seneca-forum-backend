@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OrderBy;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "topic")
@@ -27,5 +28,8 @@ public class Topic {
     @Column(name = "views")
     @OrderBy(clause = "desc")
     private int views;
+
+    @OneToMany(mappedBy = "topic",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private Set<Post> posts;
 
 }

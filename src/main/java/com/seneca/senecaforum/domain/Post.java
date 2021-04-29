@@ -1,5 +1,7 @@
 package com.seneca.senecaforum.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OrderBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,11 +32,17 @@ public class Post {
     private Date createdOn;
 
     @Column(name = "noOfReplies")
+    @OrderBy(clause = "desc")
     private int noOfReplies;
 
     @OneToOne
     @JoinColumn(name = "author_id")
     private User user;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "topic_id")
+    @JsonIgnore
+    private Topic topic;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
