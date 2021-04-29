@@ -1,5 +1,6 @@
 package com.seneca.senecaforum.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,13 +8,13 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "post")
 @Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Post {
 
     @Id
@@ -24,12 +25,16 @@ public class Post {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "createOn")
-    @Temporal(TemporalType.DATE)
-    private Date createOn;
+    @Column(name = "createdOn")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdOn;
 
     @Column(name = "noOfReplies")
     private int noOfReplies;
+
+    @OneToOne
+    @JoinColumn(name = "author_id")
+    private User user;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
