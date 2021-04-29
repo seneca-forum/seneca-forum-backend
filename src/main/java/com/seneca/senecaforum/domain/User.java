@@ -1,5 +1,7 @@
 package com.seneca.senecaforum.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,8 +11,15 @@ import javax.persistence.*;
 @Table(name = "user")
 @Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class User {
 
-    private int userId;
+    @Id
+    @Column(name = "user_id")
+    private String userId;
+
+    @Column(name = "user_name",length = 50)
+    private String username;
 
 }
