@@ -28,10 +28,9 @@ public class Post {
 
     @Column(name = "createdOn")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdOn;
+    private Date createdOn;z
 
     @Column(name = "noOfReplies")
-    @OrderBy(clause = "desc")
     private Integer noOfReplies;
 
     @OneToOne
@@ -46,5 +45,8 @@ public class Post {
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private List<Comment> comments;
+
+    @Column(name="post_tags")
+    private String tags;
 
 }
