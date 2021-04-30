@@ -25,10 +25,9 @@ public class Topic implements Comparable<Topic>{
     private String topicName;
 
     @Column(name = "views")
-    @OrderBy(clause = "desc")
     private Integer views;
 
-    @OneToMany(mappedBy = "topic",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "topic",cascade = CascadeType.ALL)
     private Set<Post> posts;
 
     @Override

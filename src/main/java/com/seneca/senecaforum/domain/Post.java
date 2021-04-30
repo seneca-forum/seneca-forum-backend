@@ -26,12 +26,11 @@ public class Post {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "createdOn")
+    @Column(name = "created_on")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn;
 
     @Column(name = "noOfReplies")
-    @OrderBy(clause = "desc")
     private Integer noOfReplies;
 
     @OneToOne
