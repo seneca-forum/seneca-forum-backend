@@ -12,17 +12,16 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "post")
+@Table(name = "posts")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Post {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
-    private int postId;
+    private Integer postId;
 
     @Column(name = "title")
     private String title;
@@ -33,7 +32,7 @@ public class Post {
 
     @Column(name = "noOfReplies")
     @OrderBy(clause = "desc")
-    private int noOfReplies;
+    private Integer noOfReplies;
 
     @OneToOne
     @JoinColumn(name = "author_id")

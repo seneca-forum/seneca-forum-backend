@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
-
     @Query("FROM Post p WHERE p.topic.topicId = :topicId")
     List<Post> findAllByTopicId(int topicId);
 }
