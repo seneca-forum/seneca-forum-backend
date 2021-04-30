@@ -61,17 +61,5 @@ public class SenecaForumApplicationTests {
         String a = "b";
     }
 
-    @Test public void updateViewByTopicId(){
-        Topic randomTopic = null;
-        try{
-            randomTopic = topicRepository.findById(8).orElseThrow();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
 
-        Topic temp = new Topic();
-        randomTopic.setViews(20);
-        topicRepository.save(randomTopic);
-    }
 }

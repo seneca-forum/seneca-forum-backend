@@ -1,41 +1,43 @@
---Create database
-CREATE DATABASE seneca_forum CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+#Create database
+    CREATE DATABASE seneca_forum CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
---Create table
+#Create table
 
---Create database
-CREATE DATABASE seneca_forum CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    #Create database
+    CREATE DATABASE seneca_forum CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
---Create table
-
+#Create table
 CREATE TABLE TOPICS(
-     `topic_id` INT PRIMARY KEY AUTO_INCREMENT,
-     `topic_name` VARCHAR(255) NOT NULL ,
-     `views` INT
+    `topic_id` INT PRIMARY KEY AUTO_INCREMENT,
+    `topic_name` VARCHAR(255) NOT NULL ,
+    `views` INT
 );
 
-CREATE TABLE POST(
-    `post_id` INT AUTO_INCREMENT PRIMARY KEY ,
-    `title` VARCHAR(255)NOT NULL UNIQUE ,
-    `createdOn` DATETIME,
-    `noOfReplies` INT,
-    `author_id` VARCHAR(10),
-    `topic_id` INT,
-    CONSTRAINT FK_AUTHOR_POST FOREIGN KEY (author_id) REFERENCES USER(user_id),
-    CONSTRAINT FK_TOPIC_POST FOREIGN KEY (topic_id) REFERENCES TOPIC(topic_id)
+CREATE TABLE POSTS(
+      `post_id` INT AUTO_INCREMENT PRIMARY KEY,
+      `title` VARCHAR(255)NOT NULL UNIQUE ,
+      `createdOn` DATETIME,
+      `noOfReplies` INT,
+      `author_id` INT,
+      `topic_id` INT,
+      CONSTRAINT FK_AUTHOR_POST FOREIGN KEY (author_id) REFERENCES USERS(user_id),
+      CONSTRAINT FK_TOPIC_POST FOREIGN KEY (topic_id) REFERENCES TOPICS(topic_id)
 );
 
-CREATE TABLE COMMENT(
-    `comment_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `content` TEXT NOT NULL,
-    `created0n` DATETIME NOT NULL,
-    `post_id`INT,
-    CONSTRAINT FK_POST_COMMENT FOREIGN KEY (post_id) REFERENCES POST(post_id)
+CREATE TABLE COMMENTS(
+     `comment_id` INT AUTO_INCREMENT PRIMARY KEY,
+     `content` TEXT NOT NULL,
+     `created0n` DATETIME NOT NULL,
+     `post_id`INT,
+     CONSTRAINT FK_POST_COMMENT FOREIGN KEY (post_id) REFERENCES POSTS(post_id)
 );
 
-CREATE TABLE USER(
-    `user_id` VARCHAR(10) PRIMARY KEY,
-    `user_name` VARCHAR(50) NOT NULL UNIQUE
+CREATE TABLE USERS(
+     `user_id` INT AUTO_INCREMENT PRIMARY KEY,
+     `username` VARCHAR(50) NOT NULL UNIQUE,
+     `password` VARCHAR(68) NOT NULL,
+     `is_remember_me` BIT DEFAULT TRUE,
+     `created_on` DATE
 );
 
 

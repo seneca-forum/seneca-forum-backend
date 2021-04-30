@@ -10,25 +10,29 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "topic")
+@Table(name = "topics")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Topic {
+public class Topic implements Comparable<Topic>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "topic_id")
-    private int topicId;
+    private Integer topicId;
 
     @Column(name = "topic_name")
     private String topicName;
 
     @Column(name = "views")
-    @OrderBy(clause = "desc")
-    private int views;
+    private Integer views;
 
-    @OneToMany(mappedBy = "topic",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "topic",cascade = CascadeType.ALL)
     private Set<Post> posts;
 
+    @Override
+    public int compareTo(Topic o) {
+        int compareViews = o.getViews().compareTo(this.getViews());
+        return compareViews;
+    }
 }

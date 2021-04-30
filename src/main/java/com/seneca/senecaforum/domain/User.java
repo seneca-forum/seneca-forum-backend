@@ -6,20 +6,31 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Data
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class User {
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private String userId;
+    private Integer userId;
 
-    @Column(name = "user_name",length = 50)
+    @Column(name = "username",length = 50,unique = true)
     private String username;
+
+    @Column(name = "password",length = 68,nullable = false)
+    private String password;
+
+    @Column(name="is_remember_me")
+    private Boolean isRememberMe;
+
+    @Column(name="created_on",nullable = false)
+    @Temporal(TemporalType.DATE)
+    private Date createdOn;
 
 }
