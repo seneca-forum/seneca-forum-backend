@@ -8,7 +8,7 @@ spring:
     password: '*3Dta1606'
   jpa:
     show-sql: true
-    database-platform: org.hibernate.dialect.MySQL5Dialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
       naming:
