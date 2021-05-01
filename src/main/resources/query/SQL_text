@@ -3,10 +3,9 @@ CREATE DATABASE seneca_forum CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 #Create table
 
-#Create database
-CREATE DATABASE seneca_forum CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 #Create table
+
 CREATE TABLE TOPICS(
                        `topic_id` INT PRIMARY KEY AUTO_INCREMENT,
                        `topic_name` VARCHAR(255) NOT NULL UNIQUE,
@@ -25,6 +24,7 @@ CREATE TABLE USERS(
 );
 
 CREATE TABLE POSTS(
+
                       `post_id` INT AUTO_INCREMENT PRIMARY KEY,
                       `title` VARCHAR(255)NOT NULL,
                       `content` VARCHAR(255)NOT NULL,
@@ -38,6 +38,7 @@ CREATE TABLE POSTS(
 );
 
 CREATE TABLE COMMENTS(
+
                          `comment_id` INT AUTO_INCREMENT PRIMARY KEY,
                          `content` TEXT NOT NULL,
                          `created_on` DATETIME NOT NULL,
