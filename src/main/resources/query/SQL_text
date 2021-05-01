@@ -33,7 +33,8 @@ CREATE TABLE COMMENTS(
 );
 
 CREATE TABLE USERS(
-     `user_id` INT AUTO_INCREMENT PRIMARY KEY,
+     `id` INT AUTO_INCREMENT PRIMARY KEY
+     `user_id` CHAR(10),
      `username` VARCHAR(50) NOT NULL UNIQUE,
      `password` VARCHAR(68) NOT NULL,
      `is_remember_me` BIT DEFAULT TRUE,

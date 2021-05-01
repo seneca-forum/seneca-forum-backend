@@ -8,10 +8,15 @@ import com.seneca.senecaforum.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @SpringBootTest
 public class SenecaForumApplicationTests {
@@ -56,8 +61,9 @@ public class SenecaForumApplicationTests {
 
     @Test
     public void getAllPostByTopicId(){
-        List<Post> posts = postRepository.findAllByTopicId(1);
-        posts.forEach(post -> System.out.println(post.getTitle()));
+        Pageable pagination = PageRequest.of(0,10,Sort.by("noOfReplies").descending());
+        List<Post> pots = postRepository.findAllByTopicId(1,pagination);
+        pots.forEach(post -> System.out.println(post.getTitle()));
         String a = "b";
     }
 
