@@ -23,4 +23,9 @@ public class TopicController {
     @Autowired
     private PostRepository postRepository;
 
+    @GetMapping("/topics/5")
+    public ResponseEntity<List<Post>>getAllPostsByPostID(){
+        List<Post>posts = postRepository.findAllByTopicId(2);
+        return ResponseEntity.ok(posts);
+    }
 }
