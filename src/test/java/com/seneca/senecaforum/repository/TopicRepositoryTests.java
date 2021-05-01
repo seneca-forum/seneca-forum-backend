@@ -46,7 +46,6 @@ public class TopicRepositoryTests{
     }
 
 
-
     @Test
     public void testUpdateViewByTopicId(){
         Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());

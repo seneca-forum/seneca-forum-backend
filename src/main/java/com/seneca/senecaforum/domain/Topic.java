@@ -1,5 +1,6 @@
 package com.seneca.senecaforum.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +8,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OrderBy;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @Table(name = "topics")
@@ -21,18 +25,16 @@ public class Topic implements Comparable<Topic>{
     @Column(name = "topic_id")
     private Integer topicId;
 
-    @Column(name = "topic_name")
+    @Column(name = "topic_name",nullable = false,unique = true)
     private String topicName;
 
-    @Column(name = "views")
+    @Column(name = "views",nullable = false)
     private Integer views;
-
-    @OneToMany(mappedBy = "topic",cascade = CascadeType.ALL)
-    private Set<Post> posts;
 
     @Override
     public int compareTo(Topic o) {
         int compareViews = o.getViews().compareTo(this.getViews());
         return compareViews;
     }
+
 }

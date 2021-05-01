@@ -1,15 +1,13 @@
 package com.seneca.senecaforum.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.OrderBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "posts")
@@ -23,27 +21,74 @@ public class Post {
     @Column(name = "post_id")
     private Integer postId;
 
-    @Column(name = "title")
+    @Column(name = "title",nullable = false)
     private String title;
 
-    @Column(name = "created_on")
+    @Column(name = "content",nullable = false)
+    private String content;
+
+    @Column(name = "created_on",nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdOn;
 
-    @Column(name = "noOfReplies")
-    private Integer noOfReplies;
-
-    @OneToOne
-    @JoinColumn(name = "author_id")
-    private User user;
+    @Column(name = "edited_on")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date editedOn;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "topic_id")
+    @JoinColumn(
+            name="author_id",
+            nullable = false,
+            referencedColumnName="user_id",
+            foreignKey=@ForeignKey(name = "FK_AUTHOR_POST")
+    )
+    private User author;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(
+            name = "topic_id",
+            nullable = false,
+            referencedColumnName="topic_id",
+            foreignKey=@ForeignKey(name = "FK_TOPIC_POST")
+    )
     @JsonIgnore
     private Topic topic;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinColumn(name = "post_id")
-    private List<Comment> comments;
+    @OneToMany(
+            mappedBy = "post",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
+    )
+    private Set<Comment> comments = new TreeSet<>();
 
+    @Column(name="post_tags")
+    private String tags;
+
+    public void addComment(Comment p){
+        this.comments.add(p);
+    }
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        return prime+ ((postId==null)?0:prime+postId.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj==null){
+            return false;
+        }
+        if(postId.getClass()==obj.getClass()){
+            return true;
+        }
+        Post post = (Post) obj;
+        if(this.postId==null&&post.getPostId()!=null){
+            return false;
+        }
+        else if(this.postId!=null && !this.postId.equals(post.getPostId())){
+            return false;
+        }
+        return true;
+    }
 }

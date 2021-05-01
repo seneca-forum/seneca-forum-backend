@@ -1,6 +1,8 @@
 package com.seneca.senecaforum.client.controller;
 
+import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Topic;
+import com.seneca.senecaforum.repository.PostRepository;
 import com.seneca.senecaforum.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,14 +20,12 @@ public class TopicController {
     @Autowired
     private TopicRepository topicRepository;
 
-    @GetMapping("/topics")
-    public ResponseEntity<List<Topic>> getAllTopics() {
-        List<Topic> topics = topicRepository.findAll();
-        if(topics.size()==0){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(topics);
+    @Autowired
+    private PostRepository postRepository;
+
+    @GetMapping("/topics/5")
+    public ResponseEntity<List<Post>>getAllPostsByPostID(){
+        List<Post>posts = postRepository.findAllByTopicId(2);
+        return ResponseEntity.ok(posts);
     }
-
-
 }

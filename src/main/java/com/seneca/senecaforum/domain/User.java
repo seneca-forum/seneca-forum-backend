@@ -20,6 +20,12 @@ public class User {
     @Column(name = "user_id")
     private Integer userId;
 
+    @Column(name = "email",length = 50,unique = true)
+    private String email;
+
+    @Column(name = "discord",length = 50)
+    private String discord;
+
     @Column(name = "username",length = 50,unique = true)
     private String username;
 
@@ -33,4 +39,27 @@ public class User {
     @Temporal(TemporalType.DATE)
     private Date createdOn;
 
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        return prime+ ((userId==null)?0:prime+userId.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj==null){
+            return false;
+        }
+        if(userId.getClass()==obj.getClass()){
+            return true;
+        }
+        Post post = (Post) obj;
+        if(this.userId==null&&post.getPostId()!=null){
+            return false;
+        }
+        else if(this.userId!=null && !this.userId.equals(post.getPostId())){
+            return false;
+        }
+        return true;
+    }
 }
