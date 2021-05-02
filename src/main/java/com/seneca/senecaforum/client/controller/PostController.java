@@ -3,19 +3,14 @@ package com.seneca.senecaforum.client.controller;
 import com.seneca.senecaforum.domain.Topic;
 import com.seneca.senecaforum.repository.PostRepository;
 import com.seneca.senecaforum.repository.TopicRepository;
-import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -33,7 +28,7 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<List<Topic>>getAllPostsByPostID(){
-        List<Topic>topics = topicRepository.findAll();
+        List<Topic> topics = topicRepository.findAll();
         return ResponseEntity.ok(topics);
     }
 }

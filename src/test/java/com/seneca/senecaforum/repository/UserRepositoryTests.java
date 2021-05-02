@@ -1,10 +1,8 @@
 package com.seneca.senecaforum.repository;
 
-import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.User;
 import com.seneca.senecaforum.utils.DatabaseUtils;
 import com.seneca.senecaforum.utils.NumberStringUtils;
-import org.hibernate.dialect.Database;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
