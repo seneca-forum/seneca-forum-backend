@@ -10,6 +10,9 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
+//    @Query("FROM Post p WHERE p.topic.topicId = :topicId")
+//    List<Post> findAllByTopicId(int topicId, Pageable pageable);
+
     @Query("FROM Post p WHERE p.topic.topicId = :topicId")
-    List<Post> findAllByTopicId(int topicId, Pageable pageable);
+    List<Post> findAllByTopicId(int topicId);
 }

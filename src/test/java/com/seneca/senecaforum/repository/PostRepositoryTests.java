@@ -78,6 +78,37 @@ public class PostRepositoryTests {
     }
 
     @Test
+    public void testAddNewPostsWithTagsFromEachTopic(){
+        int before = postRepository.findAll().size();
+        int topicSize = topicRepository.findAll().size();
+        for(int i = 1; i <= topicSize; i++){
+            User randomUsr = DatabaseUtils.generateRandomObjFromDb(userRepository,userRepository.findAll().iterator().next().getUserId());
+            Topic randomTopic = topicRepository.findById(i).get();
+            String title = NumberStringUtils.generateRandomString(15,false,true,true,true);
+            String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
+
+            String tags= "";
+            for(int j = 0; j < 5; j++){
+                String t = "#"+NumberStringUtils.generateRandomString(5,false,false,true,false);
+                tags+=t;
+            }
+
+            Post post = new Post().builder()
+                    .title(title)
+                    .content(content)
+                    .createdOn(new Date())
+                    .author(randomUsr)
+                    .topic(randomTopic)
+                    .tags(tags)
+                    .build();
+            postRepository.save(post);
+
+        }
+
+        int after = postRepository.findAll().size();
+        assertThat(before).isEqualTo(after-topicSize);
+    }
+    @Test
     public void testGetAllPostsFromTopicId(){
         Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
 
