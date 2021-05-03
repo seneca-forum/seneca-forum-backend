@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,String> {
-//
-//    @Query("FROM User u WHERE u.userId = :userId")
-//    Optional<User> findByUserId(String userId);
+
+    @Query("FROM User u WHERE u.userId = :userId")
+    Optional<User> findByUserId(String userId);
 }

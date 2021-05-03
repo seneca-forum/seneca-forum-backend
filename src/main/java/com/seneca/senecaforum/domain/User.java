@@ -21,14 +21,14 @@ import java.util.Set;
 public class User {
     @Id
     @Column(name = "user_id",updatable = false,nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "user_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "user_gen")
     @GenericGenerator(
-            name = "user_seq",
+            name = "user_gen",
             strategy = "com.seneca.senecaforum.service.utils.UserIdPrefixed",
             parameters = {
                     @Parameter(name = UserIdPrefixed.INCREMENT_PARAM,value = "1"),
                     @Parameter(name = UserIdPrefixed.CODE_NUMBER_SEPARATOR_PARAMETER,value = "_"),
-                    @Parameter(name = UserIdPrefixed.NUMBER_FORMAT_PARAMETER,value = "%05d")
+                    @Parameter(name = UserIdPrefixed.NUMBER_FORMAT_PARAMETER,value = "%03d")
             }
     )
     private String userId;
@@ -52,11 +52,14 @@ public class User {
     @Temporal(TemporalType.DATE)
     private Date createdOn;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name="users_roles",
-            joinColumns = @JoinColumn(name ="user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(
+            name="role_id",
+            nullable = false,
+            referencedColumnName="role_id",
+            foreignKey=@ForeignKey(name = "FK_ROLE_USER")
+    )
+    private Role role;
 
     @Override
     public int hashCode() {

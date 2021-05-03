@@ -22,13 +22,13 @@ public class UserIdPrefixed extends SequenceStyleGenerator {
 
     public static final String NUMBER_FORMAT_PARAMETER = "numberFormat";
 
-    public static final String NUMBER_FORMAT_DEFAULT = "%05d";
+    public static final String NUMBER_FORMAT_DEFAULT = "%03d";
 
     private String format;
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return String.format(format,((Role)object).getCode(),super.generate(session,object));
+        return String.format(format,((User)object).getRole().getCode(),super.generate(session,object));
     }
 
     @Override

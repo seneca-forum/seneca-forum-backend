@@ -35,7 +35,7 @@ public class CommentRepositoryTests {
     @Test
     public void testCreateNewComment(){
         int before = commentRepository.findAll().size();
-        User randomUsr = DatabaseUtils.generateRandomObjFromDb(userRepository,userRepository.findAll().iterator().next().getUserId());
+        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb();
         Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
 
         String content = NumberStringUtils.generateRandomString(15,false,true,true,true);

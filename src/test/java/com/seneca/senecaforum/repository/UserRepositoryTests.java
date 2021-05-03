@@ -1,5 +1,6 @@
 package com.seneca.senecaforum.repository;
 
+import com.seneca.senecaforum.domain.Role;
 import com.seneca.senecaforum.domain.User;
 import com.seneca.senecaforum.utils.DatabaseUtils;
 import com.seneca.senecaforum.utils.NumberStringUtils;
@@ -17,6 +18,9 @@ public class UserRepositoryTests {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Test
     public void testCreateNewUser(){
         int before = userRepository.findAll().size();
@@ -30,6 +34,7 @@ public class UserRepositoryTests {
                 .username(username)
                 .password(password)
                 .createdOn(new Date())
+                .role(roleRepository.findByRoleName("ROLE_USER"))
                 .isRememberMe(false)
                 .build();
         userRepository.save(user);
@@ -40,7 +45,7 @@ public class UserRepositoryTests {
 
     @Test
     public void testDeleteAUser(){
-        User randomUsr = DatabaseUtils.generateRandomObjFromDb(userRepository,userRepository.findAll().iterator().next().getUserId());
+        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb();
         userRepository.delete(randomUsr);
         Optional<User> deletedUsr = userRepository.findById(randomUsr.getUserId());
         assertThat(deletedUsr).isEmpty();
