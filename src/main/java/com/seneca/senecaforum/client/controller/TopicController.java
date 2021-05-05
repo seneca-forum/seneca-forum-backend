@@ -39,40 +39,40 @@ public class TopicController {
         return ResponseEntity.ok(topics);
     }
 
-    @GetMapping("/{topicId}/posts")
-    public ResponseEntity<List<PostDto>>getAllPostsByTopicID(@PathVariable Integer topicId){
-        List<Post>posts = postRepository.findAllByTopicId(topicId);
-        List<PostDto>postDto = new ArrayList<>();
-
-        for(Post p:posts){
-            // convert author
-            User author = p.getAuthor();
-            EntityDto dtoAuthor = MapperUtils.convertToDto(author,new UserDto());
-
-            // convert comment
-            Set<CommentDto> commentSet = new TreeSet<>();
-            Set<Comment> comments = p.getComments();
-            for(Comment c:comments){
-                EntityDto dtoCmt = MapperUtils.convertToDto(c,new CommentDto());
-                commentSet.add((CommentDto)dtoCmt);
-            }
-
-            // convert post
-            EntityDto dtoPost = MapperUtils.convertToDto(
-                    p,
-                    new PostDto(
-                            p.getPostId(),
-                            p.getTitle(),
-                            p.getCreatedOn(),
-                            (UserDto) dtoAuthor,
-                            p.getTopic(),
-                            commentSet,
-                            p.getTags()
-                    )
-            );
-            postDto.add((PostDto)dtoPost);
-        }
-        return ResponseEntity.ok(postDto);
-    }
+//    @GetMapping("/{topicId}/posts")
+//    public ResponseEntity<List<PostDto>>getAllPostsByTopicID(@PathVariable Integer topicId){
+//        List<Post>posts = postRepository.findAllByTopicId(topicId);
+//        List<PostDto>postDto = new ArrayList<>();
+//
+//        for(Post p:posts){
+//            // convert author
+//            User author = p.getAuthor();
+//            EntityDto dtoAuthor = MapperUtils.convertToDto(author,new UserDto());
+//
+//            // convert comment
+//            Set<CommentDto> commentSet = new TreeSet<>();
+//            Set<Comment> comments = p.getComments();
+//            for(Comment c:comments){
+//                EntityDto dtoCmt = MapperUtils.convertToDto(c,new CommentDto());
+//                commentSet.add((CommentDto)dtoCmt);
+//            }
+//
+//            // convert post
+//            EntityDto dtoPost = MapperUtils.convertToDto(
+//                    p,
+//                    new PostDto(
+//                            p.getPostId(),
+//                            p.getTitle(),
+//                            p.getCreatedOn(),
+//                            (UserDto) dtoAuthor,
+//                            p.getTopic(),
+//                            commentSet,
+//                            p.getTags()
+//                    )
+//            );
+//            postDto.add((PostDto)dtoPost);
+//        }
+//        return ResponseEntity.ok(postDto);
+//    }
 
 }

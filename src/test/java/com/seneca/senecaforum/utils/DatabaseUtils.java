@@ -1,7 +1,9 @@
 package com.seneca.senecaforum.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.seneca.senecaforum.domain.User;
 import com.seneca.senecaforum.repository.UserRepository;
@@ -10,10 +12,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
 import javassist.NotFoundException;
+import org.springframework.stereotype.Service;
 
-public class DatabaseUtils {
-    @Autowired
-    private static UserRepository userRepository;
+public class DatabaseUtils { ;
 
     public static <T> int generateRandomNumWithinObjSizeFromDb(CrudRepository<T, Integer>repo) {
         int size = ((List<T>)repo.findAll()).size();
@@ -43,14 +44,14 @@ public class DatabaseUtils {
         return object;
     }
 
-    public static User generateRandomObjFromUserDb(){
-        List<String>userIds = new ArrayList<>();
+    public static User generateRandomObjFromUserDb(JpaRepository<User,String> userRepository){
+        Set<String> userIds = new HashSet<>();
         List<User>users = userRepository.findAll();
         for(User u:users){
             userIds.add(u.getUserId());
         }
-        Integer randomNumber = NumberStringUtils.generateRandomNumber(1,userIds.size());
-        return users.get(randomNumber);
+//        Integer randomNumber = NumberStringUtils.generateRandomNumber(1,userIds.size());
+        return users.get(1);
     }
 
 

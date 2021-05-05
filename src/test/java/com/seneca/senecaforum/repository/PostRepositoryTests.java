@@ -8,6 +8,8 @@ import com.seneca.senecaforum.utils.NumberStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 
 import java.util.Date;
@@ -32,7 +34,7 @@ public class PostRepositoryTests {
     @Test
     public void addNewPostWithTags(){
         int before = postRepository.findAll().size();
-        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb();
+        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
         Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());
         String title = NumberStringUtils.generateRandomString(15,false,true,true,true);
         String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
@@ -59,7 +61,7 @@ public class PostRepositoryTests {
     @Test
     public void addNewPostWithNoTags(){
         int before = postRepository.findAll().size();
-        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb();
+        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
         Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());
         String title = NumberStringUtils.generateRandomString(15,false,true,true,true);
         String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
@@ -82,7 +84,7 @@ public class PostRepositoryTests {
         int before = postRepository.findAll().size();
         int topicSize = topicRepository.findAll().size();
         for(int i = 1; i <= topicSize; i++){
-            User randomUsr = DatabaseUtils.generateRandomObjFromUserDb();
+            User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
             Topic randomTopic = topicRepository.findById(i).get();
             String title = NumberStringUtils.generateRandomString(15,false,true,true,true);
             String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
@@ -113,10 +115,14 @@ public class PostRepositoryTests {
         Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
 
         int topicId = randomPost.getTopic().getTopicId();
-        List<Post>posts = postRepository.findAllByTopicId(topicId);
-        for(Post p:posts){
-            assertThat(p.getTopic().getTopicId()).isEqualTo(topicId);
-        }
+        List<Post>posts = postRepository.findAllByTopicId(topicId,PageRequest.of(
+                0,10,Sort.by(new Sort.Order(Sort.Direction.DESC,"createdOn"))
+        ));
+        String a = "b";
+        posts.forEach(post -> System.out.println(post.getTopic()));
+//        for(Post p:posts){
+//            assertThat(p.getTopic().getTopicId()).isEqualTo(topicId);
+//        }
     }
 
 
@@ -137,7 +143,9 @@ public class PostRepositoryTests {
         assertThat(updatedPost.getContent()).isEqualTo(newContent);
     }
 
+    @Test
+    public void testPageablePostAPI(){
 
-
+    }
 }
 

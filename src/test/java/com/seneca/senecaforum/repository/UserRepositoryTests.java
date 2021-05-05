@@ -45,7 +45,7 @@ public class UserRepositoryTests {
 
     @Test
     public void testDeleteAUser(){
-        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb();
+        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
         userRepository.delete(randomUsr);
         Optional<User> deletedUsr = userRepository.findById(randomUsr.getUserId());
         assertThat(deletedUsr).isEmpty();
