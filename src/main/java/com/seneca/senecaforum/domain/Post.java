@@ -64,6 +64,9 @@ public class Post {
     @Column(name="post_tags")
     private String tags;
 
+    @Column(name = "views",nullable = false)
+    private Integer views;
+
     public void addComment(Comment p){
         this.comments.add(p);
     }

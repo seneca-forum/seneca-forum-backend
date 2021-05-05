@@ -33,7 +33,8 @@ CREATE TABLE POSTS(
                       `author_id` INT NOT NULL,
                       `topic_id` INT NOT NULL,
                       `post_tags`VARCHAR(255),
-                        CONSTRAINT FK_AUTHOR_POST FOREIGN KEY (author_id) REFERENCES USERS(user_id),
+                      `views` INT NOT NULL,
+                      CONSTRAINT FK_AUTHOR_POST FOREIGN KEY (author_id) REFERENCES USERS(user_id),
                       CONSTRAINT FK_TOPIC_POST FOREIGN KEY (topic_id) REFERENCES TOPICS(topic_id)
 );
 

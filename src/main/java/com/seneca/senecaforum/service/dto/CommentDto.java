@@ -25,6 +25,6 @@ public class CommentDto implements EntityDto, Comparable<CommentDto>{
 
     @Override
     public int compareTo(CommentDto o) {
-        return o.commentId.compareTo(commentId);
+        return o.createdOn.compareTo(createdOn);
     }
 }

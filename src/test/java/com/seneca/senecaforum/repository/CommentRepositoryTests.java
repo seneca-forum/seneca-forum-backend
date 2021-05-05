@@ -2,21 +2,15 @@ package com.seneca.senecaforum.repository;
 
 import com.seneca.senecaforum.domain.Comment;
 import com.seneca.senecaforum.domain.Post;
-import com.seneca.senecaforum.domain.Topic;
 import com.seneca.senecaforum.domain.User;
 import com.seneca.senecaforum.utils.DatabaseUtils;
 import com.seneca.senecaforum.utils.NumberStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 
-import javax.transaction.Transactional;
-import javax.xml.crypto.Data;
 import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -33,23 +27,30 @@ public class CommentRepositoryTests {
 
 
     @Test
-    public void testCreateNewComment(){
+    public void testCreateNewComments(){
         int before = commentRepository.findAll().size();
         User randomUsr = DatabaseUtils.generateRandomObjFromDb(userRepository,userRepository.findAll().iterator().next().getUserId());
         Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
 
         String content = NumberStringUtils.generateRandomString(15,false,true,true,true);
-        Comment comment = new Comment().builder()
+        Comment commentOne = new Comment().builder()
                 .commenter(randomUsr)
                 .content(content)
                 .post(randomPost)
                 .createdOn(new Date())
                 .build();
-        commentRepository.save(comment);
+        Comment commentTwo = new Comment().builder()
+                .commenter(randomUsr)
+                .content(content)
+                .post(randomPost)
+                .createdOn(new Date())
+                .build();
+        commentRepository.saveAll(List.of(commentOne,commentTwo));
 
-        randomPost.addComment(comment);
+        randomPost.addComment(commentOne);
+        randomPost.addComment(commentTwo);
         int after = commentRepository.findAll().size();
-        assertThat(before).isEqualTo(after-1);
+        assertThat(before).isEqualTo(after-2);
     }
 
 //    @Test
