@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Post {
+public class Post{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
@@ -57,10 +58,10 @@ public class Post {
     private Topic topic;
 
     @OneToMany(
-            mappedBy = "post",
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
+    @JoinColumn(name="post_id")
     @OrderBy(clause = "createdOn desc")
     private List<Comment> comments;
 
@@ -70,8 +71,10 @@ public class Post {
     @Column(name = "views",nullable = false)
     private Integer views;
 
-    public void addComment(Comment p){
-        this.comments.add(p);
+    public void addComment(Comment comment){
+        if(comments == null)
+            comments = new ArrayList<>();
+        this.comments.add(comment);
     }
 
     @Override
@@ -97,4 +100,5 @@ public class Post {
         }
         return true;
     }
+
 }

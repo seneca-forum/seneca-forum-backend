@@ -12,9 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import javax.xml.crypto.Data;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -118,9 +120,10 @@ public class PostRepositoryTests {
         Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
 
         int topicId = randomPost.getTopic().getTopicId();
-        List<Post>posts = postRepository.findAllByTopicId(topicId,PageRequest.of(
-                0,10,Sort.by(new Sort.Order(Sort.Direction.DESC,"createdOn"))
-        ));
+        Optional<Topic> topic = topicRepository.findById(topicId);
+        List<Post>posts = postRepository.findAllByTopicOrderByCommentsCreatedOnDesc(topic.get(),PageRequest.of(
+                2,10)
+        );
         String a = "b";
         posts.forEach(post -> System.out.println(post.getTopic()));
 //        for(Post p:posts){
@@ -156,6 +159,20 @@ public class PostRepositoryTests {
         assertThat(randomPost.getViews()).isEqualTo(newViews);
     }
 
+    @Test
+    public void testFilterPosts() {
+        String tag = "test";
+        java.sql.Date startDate = java.sql.Date.valueOf("2020-05-05");
+        java.sql.Date endDate = java.sql.Date.valueOf("2021-05-05");
+        List<Post> posts = postRepository.filterPosts(1,tag, startDate,endDate);
+
+        for(Post p:posts){
+            assertThat(p.getTopic().getTopicId()).isEqualTo(1);
+
+            assertThat(p.getCreatedOn()).isAfterOrEqualTo(startDate).isBeforeOrEqualTo(endDate);
+        }
+
+    }
 
 }
 

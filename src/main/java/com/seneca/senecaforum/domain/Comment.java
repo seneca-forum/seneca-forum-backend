@@ -36,13 +36,6 @@ public class Comment {
     )
     private User commenter;
 
-    @ManyToOne
-    @JoinColumn(
-            name = "post_id",
-            nullable = false,
-            foreignKey = @ForeignKey(name = "FK_POST_COMMENT")
-    )
-    @JsonIgnore
-    private Post post;
+
 }
 
