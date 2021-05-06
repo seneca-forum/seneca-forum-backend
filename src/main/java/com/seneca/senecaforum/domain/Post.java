@@ -1,6 +1,7 @@
 package com.seneca.senecaforum.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OrderBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,8 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -61,10 +61,14 @@ public class Post {
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
-    private Set<Comment> comments = new TreeSet<>();
+    @OrderBy(clause = "createdOn desc")
+    private List<Comment> comments;
 
     @Column(name="post_tags")
     private String tags;
+
+    @Column(name = "views",nullable = false)
+    private Integer views;
 
     public void addComment(Comment p){
         this.comments.add(p);

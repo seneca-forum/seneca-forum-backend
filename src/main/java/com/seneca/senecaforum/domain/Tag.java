@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tags")
-public class Tag {
+public class Tag implements Comparable<Tag>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
@@ -22,7 +22,8 @@ public class Tag {
     @Column(name = "tag_name",length = 50,unique = true)
     private String tagName;
 
-    public Tag(String tag){
-        this.tagName = tag;
+    @Override
+    public int compareTo(Tag o) {
+        return tagName.compareTo(o.tagName);
     }
 }

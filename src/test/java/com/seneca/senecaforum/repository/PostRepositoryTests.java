@@ -51,6 +51,7 @@ public class PostRepositoryTests {
                 .author(randomUsr)
                 .topic(randomTopic)
                 .tags(tags)
+                .views(0)
                 .build();
         postRepository.save(post);
 
@@ -63,7 +64,7 @@ public class PostRepositoryTests {
         int before = postRepository.findAll().size();
         User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
         Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());
-        String title = NumberStringUtils.generateRandomString(15,false,true,true,true);
+        String title = NumberStringUtils.generateRandomString(35,false,true,true,true);
         String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
 
         Post post = new Post().builder()
@@ -72,6 +73,7 @@ public class PostRepositoryTests {
                 .createdOn(new Date())
                 .author(randomUsr)
                 .topic(randomTopic)
+                .views(0)
                 .build();
         postRepository.save(post);
 
@@ -86,7 +88,7 @@ public class PostRepositoryTests {
         for(int i = 1; i <= topicSize; i++){
             User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
             Topic randomTopic = topicRepository.findById(i).get();
-            String title = NumberStringUtils.generateRandomString(15,false,true,true,true);
+            String title = NumberStringUtils.generateRandomString(45,false,true,true,true);
             String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
 
             String tags= "";
@@ -102,6 +104,7 @@ public class PostRepositoryTests {
                     .author(randomUsr)
                     .topic(randomTopic)
                     .tags(tags)
+                    .views(0)
                     .build();
             postRepository.save(post);
 
@@ -144,8 +147,15 @@ public class PostRepositoryTests {
     }
 
     @Test
-    public void testPageablePostAPI(){
-
+    public void testUpdateAPostViews(){
+        Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
+        Integer currentViews = randomPost.getViews();
+        Integer newViews = NumberStringUtils.generateRandomNumber(0,20)+currentViews;
+        randomPost.setViews(newViews);
+        postRepository.save(randomPost);
+        assertThat(randomPost.getViews()).isEqualTo(newViews);
     }
+
+
 }
 

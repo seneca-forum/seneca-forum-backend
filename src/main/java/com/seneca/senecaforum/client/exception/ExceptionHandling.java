@@ -1,6 +1,7 @@
 package com.seneca.senecaforum.client.exception;
 
 import com.seneca.senecaforum.service.dto.ErrorResponse;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,13 @@ public class ExceptionHandling extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleNotFoundException(RuntimeException ex, WebRequest request){
         String path = ((ServletWebRequest)request).getRequest().getRequestURI();
         ErrorResponse error = new ErrorResponse(HttpStatus.NO_CONTENT.value(),ex.getMessage(),path);
+        return handleExceptionInternal(ex,error,new HttpHeaders(),HttpStatus.NO_CONTENT,request);
+    }
+
+    @ExceptionHandler(value={BadRequestException.class})
+    protected ResponseEntity<Object>handleBadRequestException(RuntimeException ex,WebRequest request){
+        String path = ((ServletWebRequest)request).getRequest().getRequestURI();
+        ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(),ex.getMessage(),path);
         return handleExceptionInternal(ex,error,new HttpHeaders(),HttpStatus.BAD_REQUEST,request);
     }
 }

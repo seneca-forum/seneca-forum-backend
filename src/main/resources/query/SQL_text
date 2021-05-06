@@ -24,16 +24,18 @@ CREATE TABLE USERS(
 );
 
 CREATE TABLE POSTS(
-    `post_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `title` VARCHAR(255)NOT NULL,
-    `content` TEXT,
-    `created_on` DATETIME NOT NULL,
-    `edited_on` DATETIME,
-    `author_id` VARCHAR(10) NOT NULL,
-    `topic_id` INT NOT NULL,
-    `post_tags`VARCHAR(255),
-    CONSTRAINT FK_AUTHOR_POST FOREIGN KEY (author_id) REFERENCES USERS(user_id),
-    CONSTRAINT FK_TOPIC_POST FOREIGN KEY (topic_id) REFERENCES TOPICS(topic_id)
+
+                      `post_id` INT AUTO_INCREMENT PRIMARY KEY,
+                      `title` VARCHAR(255)NOT NULL,
+                      `content` VARCHAR(255)NOT NULL,
+                      `created_on` DATE NOT NULL,
+                      `edited_on` DATE,
+                      `author_id` INT NOT NULL,
+                      `topic_id` INT NOT NULL,
+                      `post_tags`VARCHAR(255),
+                      `views` INT NOT NULL,
+                      CONSTRAINT FK_AUTHOR_POST FOREIGN KEY (author_id) REFERENCES USERS(user_id),
+                      CONSTRAINT FK_TOPIC_POST FOREIGN KEY (topic_id) REFERENCES TOPICS(topic_id)
 );
 
 CREATE TABLE COMMENTS(

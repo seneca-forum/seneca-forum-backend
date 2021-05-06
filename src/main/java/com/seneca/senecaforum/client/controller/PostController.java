@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -25,10 +27,13 @@ public class PostController {
     private PostService postService;
 
 
-
     @GetMapping
-    public ResponseEntity<List<Topic>>getAllPostsByPostID(){
+    public ResponseEntity<Set<Topic>>getAllPostsByPostID(){
         List<Topic> topics = topicRepository.findAll();
-        return ResponseEntity.ok(topics);
+        Set<Topic>topicSet = new TreeSet<>();
+        for(Topic t:topics){
+            topicSet.add(t);
+        }
+        return ResponseEntity.ok(topicSet);
     }
 }

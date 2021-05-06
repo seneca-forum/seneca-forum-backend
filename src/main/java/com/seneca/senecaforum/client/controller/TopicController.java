@@ -1,5 +1,7 @@
 package com.seneca.senecaforum.client.controller;
 
+import com.seneca.senecaforum.client.exception.BadRequestException;
+import com.seneca.senecaforum.client.exception.NotFoundException;
 import com.seneca.senecaforum.domain.Comment;
 import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Topic;
@@ -10,16 +12,11 @@ import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/topics")
@@ -34,23 +31,39 @@ public class TopicController {
     private UserRepository userRepository;
 
     @GetMapping
-    public ResponseEntity<List<Topic>>getAllPostsByPostID(){
+    public ResponseEntity<Set<Topic>>getAllTopics(){
         List<Topic>topics = topicRepository.findAll();
-        return ResponseEntity.ok(topics);
+        Set<Topic>topicSet = new HashSet<>();
+        for(Topic t: topics){
+            topicSet.add(t);
+        }
+        return ResponseEntity.ok(topicSet);
     }
 
-//    @GetMapping("/{topicId}/posts")
-//    public ResponseEntity<List<PostDto>>getAllPostsByTopicID(@PathVariable Integer topicId){
+//    @GetMapping("/{topicId}/posts/size")
+//    public ResponseEntity<Integer>getNumberofPostsFromTopicID(@PathVariable Integer topicId){
 //        List<Post>posts = postRepository.findAllByTopicId(topicId);
-//        List<PostDto>postDto = new ArrayList<>();
+//        Integer postSize = posts.size();
+//        return ResponseEntity.ok(postSize);
+//    }
+//
+//    @GetMapping("/{topicId}/posts")
+//    public ResponseEntity<Set<PostDto>>getAllPostsByTopicID(@PathVariable Integer topicId,
+//                                                            @RequestParam Integer pageIndex,
+//                                                            @RequestParam Integer pageSize){
+//        List<Post>posts = postRepository.findAllByTopicId(topicId);
+//        if((pageIndex-1)*pageSize>posts.size()){
+//            throw new BadRequestException("page "+pageIndex+ " is out of range. Total number of posts are just "+posts.size());
+//        }
+//        TreeSet<PostDto>postDtoSet =new TreeSet<>();
 //
 //        for(Post p:posts){
 //            // convert author
 //            User author = p.getAuthor();
-//            EntityDto dtoAuthor = MapperUtils.convertToDto(author,new UserDto());
+//            UserDto dtoAuthor = (UserDto) MapperUtils.convertToDto(author,new UserDto());
 //
 //            // convert comment
-//            Set<CommentDto> commentSet = new TreeSet<>();
+//            TreeSet<CommentDto> commentSet = new TreeSet<>();
 //            Set<Comment> comments = p.getComments();
 //            for(Comment c:comments){
 //                EntityDto dtoCmt = MapperUtils.convertToDto(c,new CommentDto());
@@ -58,21 +71,37 @@ public class TopicController {
 //            }
 //
 //            // convert post
-//            EntityDto dtoPost = MapperUtils.convertToDto(
-//                    p,
-//                    new PostDto(
-//                            p.getPostId(),
-//                            p.getTitle(),
-//                            p.getCreatedOn(),
-//                            (UserDto) dtoAuthor,
-//                            p.getTopic(),
-//                            commentSet,
-//                            p.getTags()
-//                    )
-//            );
-//            postDto.add((PostDto)dtoPost);
+//            PostDto convertedPostDto = new PostDto().builder()
+//                    .postId(p.getPostId())
+//                    .title(p.getTitle())
+//                    .createdOn(p.getCreatedOn())
+//                    .author(dtoAuthor)
+//                    .topic(p.getTopic())
+//                    .comments(commentSet)
+//                    .tags(p.getTags())
+//                    .views(p.getViews())
+//                    .build();
+//
+//            postDtoSet.add(convertedPostDto);
 //        }
-//        return ResponseEntity.ok(postDto);
+//
+//        List<Integer>ids = postDtoSet.stream().map(PostDto::getPostId).collect(Collectors.toList());
+//        System.out.println(ids);
+//        Integer startPage = (pageIndex-1)*pageSize;
+//        List<PostDto>postList = new ArrayList<>(postDtoSet);
+//        PostDto startPost = postList.get(startPage);
+//
+//        Integer endPage = (startPage+pageSize)>=postDtoSet.size()?(startPage+postDtoSet.size()-startPage-1):(startPage+pageSize);
+//        PostDto endPost = postList.get(endPage);
+//
+//        Set<PostDto>postSubset = postDtoSet.subSet(startPost,endPost);
+//        // add the last item to return in case it is in the last page
+//        if((startPage+pageSize)>=postDtoSet.size()){
+//            Set<PostDto>subSetWithLast = new TreeSet<>();
+//            subSetWithLast.addAll(postSubset);
+//            subSetWithLast.add(postDtoSet.last());
+//            return ResponseEntity.ok(subSetWithLast);
+//        }
+//        return ResponseEntity.ok(postSubset);
 //    }
-
 }

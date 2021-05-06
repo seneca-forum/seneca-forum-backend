@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 public class DatabaseUtils { ;
 
+    @Autowired
+    private static UserRepository userRepository;
+
     public static <T> int generateRandomNumWithinObjSizeFromDb(CrudRepository<T, Integer>repo) {
         int size = ((List<T>)repo.findAll()).size();
         int randomNumber = NumberStringUtils.generateRandomNumber(1, size);
