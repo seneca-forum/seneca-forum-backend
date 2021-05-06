@@ -36,19 +36,20 @@ public class CommentRepositoryTests {
         Comment commentOne = new Comment().builder()
                 .commenter(randomUsr)
                 .content(content)
-                .post(randomPost)
+//                .post(randomPost)
                 .createdOn(new Date())
                 .build();
         Comment commentTwo = new Comment().builder()
                 .commenter(randomUsr)
                 .content(content)
-                .post(randomPost)
+ //               .post(randomPost)
                 .createdOn(new Date())
                 .build();
         commentRepository.saveAll(List.of(commentOne,commentTwo));
 
         randomPost.addComment(commentOne);
         randomPost.addComment(commentTwo);
+//        postRepository.save(randomPost);
         int after = commentRepository.findAll().size();
         assertThat(before).isEqualTo(after-2);
     }

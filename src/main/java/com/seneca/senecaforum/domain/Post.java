@@ -55,7 +55,7 @@ public class Post {
     private Topic topic;
 
     @OneToMany(
-            mappedBy = "post",
+//            mappedBy = "post",
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
@@ -69,6 +69,9 @@ public class Post {
     private Integer views;
 
     public void addComment(Comment p){
+        if(this.comments==null){
+            this.comments = new ArrayList<>();
+        }
         this.comments.add(p);
     }
 

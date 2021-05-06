@@ -44,9 +44,9 @@ CREATE TABLE COMMENTS(
                          `content` TEXT NOT NULL,
                          `created_on` DATETIME NOT NULL,
                          `commenter_id`INT NOT NULL,
-                         `post_id`INT NOT NULL,
+                         #`post_id`INT NOT NULL,
                          CONSTRAINT FK_COMMENTER_COMMENT FOREIGN KEY (commenter_id) REFERENCES USERS(user_id),
-                         CONSTRAINT FK_POST_COMMENT FOREIGN KEY (post_id) REFERENCES POSTS(post_id)
+                         #CONSTRAINT FK_POST_COMMENT FOREIGN KEY (post_id) REFERENCES POSTS(post_id)
 );
 
 
