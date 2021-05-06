@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import javax.xml.crypto.Data;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -150,6 +152,20 @@ public class PostRepositoryTests {
         assertThat(randomPost.getViews()).isEqualTo(newViews);
     }
 
+    @Test
+    public void testFilterPosts() {
+        String tag = "test";
+        java.sql.Date startDate = java.sql.Date.valueOf("2020-05-05");
+        java.sql.Date endDate = java.sql.Date.valueOf("2021-05-05");
+        List<Post> posts = postRepository.filterPosts(1,tag, startDate,endDate);
+
+        for(Post p:posts){
+            assertThat(p.getTopic().getTopicId()).isEqualTo(1);
+
+            assertThat(p.getCreatedOn()).isAfterOrEqualTo(startDate).isBeforeOrEqualTo(endDate);
+        }
+
+    }
 
 }
 

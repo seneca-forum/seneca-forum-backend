@@ -11,43 +11,41 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostDto implements EntityDto,Comparable<PostDto>{
+public class PostDto implements EntityDto{
     private Integer postId;
     private String title;
     private Date createdOn;
     private UserDto author;
     private Topic topic;
-    private TreeSet<CommentDto> comments = new TreeSet();
+    //private TreeSet<CommentDto> comments = new TreeSet();
+    private List<CommentDto> comments;
     private String tags;
     private Integer views;
 
-    @Override
-    public int compareTo(PostDto o) {
-        if(this.comments.size()>0&&o.comments.size()>0){
-            // Comment already sorts them in desc order
-            CommentDto myRecentComment= this.comments.first();
-            CommentDto otherRecentComment= o.comments.first();
-            return otherRecentComment.getCreatedOn().compareTo(myRecentComment.getCreatedOn());
-        }
-        else if(this.comments.size()>0&&o.comments.size()==0){
-            return -1;
-        }
-        else if(this.comments.size()==0&&o.comments.size()>0){
-            return 1;
-        }
-        else{
-            return o.postId.compareTo(this.postId);
-        }
-    }
+//    @Override
+//    public int compareTo(PostDto o) {
+//        if(this.comments.size()>0&&o.comments.size()>0){
+//            // Comment already sorts them in desc order
+//            CommentDto myRecentComment= this.comments.first();
+//            CommentDto otherRecentComment= o.comments.first();
+//            return otherRecentComment.getCreatedOn().compareTo(myRecentComment.getCreatedOn());
+//        }
+//        else if(this.comments.size()>0&&o.comments.size()==0){
+//            return -1;
+//        }
+//        else if(this.comments.size()==0&&o.comments.size()>0){
+//            return 1;
+//        }
+//        else{
+//            return o.postId.compareTo(this.postId);
+//        }
+//    }
 
     @Override
     public int hashCode() {

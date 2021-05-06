@@ -59,7 +59,8 @@ public class Post {
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
-    private Set<Comment> comments = new TreeSet<>();
+//    private Set<Comment> comments = new TreeSet<>();
+    private List<Comment>comments;
 
     @Column(name="post_tags")
     private String tags;
