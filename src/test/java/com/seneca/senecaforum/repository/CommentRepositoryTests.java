@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +30,6 @@ public class CommentRepositoryTests {
     @Test
     public void testCreateNewComments(){
 
-        int before = commentRepository.findAll().size();
         User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
         Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
 
@@ -37,31 +37,16 @@ public class CommentRepositoryTests {
         Comment commentOne = new Comment().builder()
                 .commenter(randomUsr)
                 .content(content)
-//                .post(randomPost)
                 .createdOn(new Date())
                 .build();
         Comment commentTwo = new Comment().builder()
                 .commenter(randomUsr)
                 .content(content)
- //               .post(randomPost)
                 .createdOn(new Date())
                 .build();
-        commentRepository.saveAll(List.of(commentOne,commentTwo));
-
         randomPost.addComment(commentOne);
         randomPost.addComment(commentTwo);
-//        postRepository.save(randomPost);
-        int after = commentRepository.findAll().size();
-        assertThat(before).isEqualTo(after-2);
+        postRepository.save(randomPost);
     }
-
-//    @Test
-//    public void testDeleteComment(){
-//        int before = commentRepository.findAll().size();
-//        Comment cmt = commentRepository.findById(3).get();
-//        commentRepository.delete(cmt);
-//        int after = commentRepository.findAll().size();
-//        assertThat(before).isEqualTo(after+1);
-//    }
 
 }

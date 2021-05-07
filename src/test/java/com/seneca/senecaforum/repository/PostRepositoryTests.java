@@ -122,7 +122,7 @@ public class PostRepositoryTests {
         int topicId = randomPost.getTopic().getTopicId();
         Optional<Topic> topic = topicRepository.findById(topicId);
         List<Post>posts = postRepository.findAllByTopicOrderByCommentsCreatedOnDesc(topic.get(),PageRequest.of(
-                2,10)
+                0,10)
         );
         String a = "b";
         posts.forEach(post -> System.out.println(post.getTopic()));

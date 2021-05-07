@@ -35,16 +35,5 @@ public class Comment {
             foreignKey = @ForeignKey(name = "FK_COMMENTER_COMMENT")
     )
     private User commenter;
-//
-//    @ManyToOne
-//    @JoinColumn(
-//            name="post_id",
-//            nullable = false,
-//            foreignKey=@ForeignKey(name = "FK_POST_COMMENT")
-//    )
-//    @JsonIgnore
-//    private Post post;
-
-
 }
 
