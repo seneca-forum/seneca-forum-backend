@@ -1,17 +1,35 @@
-package com.seneca.senecaforum.service.dto;
+package com.seneca.senecaforum.service.utils;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-@Component
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MapperUtils {
-    public static EntityDto convertToDto(Object obj, EntityDto mapper) {
-        return new ModelMapper().map(obj, mapper.getClass());
+
+    private static MapperUtils mapperUtils;
+
+    private final ModelMapper modelMapper;
+
+    public MapperUtils(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
     }
 
-    public Object convertToEntity(Object obj, EntityDto mapper) {
-        return new ModelMapper().map(mapper, obj.getClass());
+    public static MapperUtils getInstance(){
+        if (mapperUtils == null){
+            synchronized (ModelMapper.class){//lazy loading
+                if (mapperUtils == null){
+                    ModelMapper modelMapper = new ModelMapper();
+                    mapperUtils = new MapperUtils(modelMapper);
+                }
+            }
+        }
+        return mapperUtils;
+    }
+    public <S,T> List<T> mapperList(List<S> source, Class<T> targetClass){
+        return source
+                .stream()
+                .map(element -> modelMapper.map(element,targetClass))
+                .collect(Collectors.toList());
     }
 }
