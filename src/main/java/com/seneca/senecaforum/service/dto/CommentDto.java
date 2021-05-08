@@ -16,15 +16,15 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CommentDto implements EntityDto, Comparable<CommentDto>{
+public class CommentDto implements EntityDto{
     private Integer commentId;
 
     private Date createdOn;
 
     private UserDto commenter;
 
-    @Override
-    public int compareTo(CommentDto o) {
-        return o.commentId.compareTo(commentId);
-    }
+//    @Override
+//    public int compareTo(CommentDto o) {
+//        return o.createdOn.compareTo(createdOn);
+//    }
 }

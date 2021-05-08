@@ -1,15 +1,16 @@
 package com.seneca.senecaforum.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OrderBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -17,7 +18,7 @@ import java.util.TreeSet;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Post {
+public class Post{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
@@ -57,17 +58,23 @@ public class Post {
     private Topic topic;
 
     @OneToMany(
-            mappedBy = "post",
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
-    private Set<Comment> comments = new TreeSet<>();
+    @JoinColumn(name="post_id")
+    @OrderBy(clause = "createdOn desc")
+    private List<Comment> comments;
 
     @Column(name="post_tags")
     private String tags;
 
-    public void addComment(Comment p){
-        this.comments.add(p);
+    @Column(name = "views",nullable = false)
+    private Integer views;
+
+    public void addComment(Comment comment){
+        if(comments == null)
+            comments = new ArrayList<>();
+        this.comments.add(comment);
     }
 
     @Override
@@ -93,4 +100,5 @@ public class Post {
         }
         return true;
     }
+
 }

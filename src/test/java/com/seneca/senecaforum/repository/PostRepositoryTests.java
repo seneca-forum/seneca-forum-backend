@@ -8,11 +8,15 @@ import com.seneca.senecaforum.utils.NumberStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import javax.xml.crypto.Data;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,7 +36,7 @@ public class PostRepositoryTests {
     @Test
     public void addNewPostWithTags(){
         int before = postRepository.findAll().size();
-        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb();
+        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
         Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());
         String title = NumberStringUtils.generateRandomString(15,false,true,true,true);
         String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
@@ -49,6 +53,7 @@ public class PostRepositoryTests {
                 .author(randomUsr)
                 .topic(randomTopic)
                 .tags(tags)
+                .views(0)
                 .build();
         postRepository.save(post);
 
@@ -59,9 +64,9 @@ public class PostRepositoryTests {
     @Test
     public void addNewPostWithNoTags(){
         int before = postRepository.findAll().size();
-        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb();
+        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
         Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());
-        String title = NumberStringUtils.generateRandomString(15,false,true,true,true);
+        String title = NumberStringUtils.generateRandomString(35,false,true,true,true);
         String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
 
         Post post = new Post().builder()
@@ -70,6 +75,7 @@ public class PostRepositoryTests {
                 .createdOn(new Date())
                 .author(randomUsr)
                 .topic(randomTopic)
+                .views(0)
                 .build();
         postRepository.save(post);
 
@@ -82,9 +88,9 @@ public class PostRepositoryTests {
         int before = postRepository.findAll().size();
         int topicSize = topicRepository.findAll().size();
         for(int i = 1; i <= topicSize; i++){
-            User randomUsr = DatabaseUtils.generateRandomObjFromUserDb();
+            User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
             Topic randomTopic = topicRepository.findById(i).get();
-            String title = NumberStringUtils.generateRandomString(15,false,true,true,true);
+            String title = NumberStringUtils.generateRandomString(45,false,true,true,true);
             String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
 
             String tags= "";
@@ -100,6 +106,7 @@ public class PostRepositoryTests {
                     .author(randomUsr)
                     .topic(randomTopic)
                     .tags(tags)
+                    .views(0)
                     .build();
             postRepository.save(post);
 
@@ -113,10 +120,15 @@ public class PostRepositoryTests {
         Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
 
         int topicId = randomPost.getTopic().getTopicId();
-        List<Post>posts = postRepository.findAllByTopicId(topicId);
-        for(Post p:posts){
-            assertThat(p.getTopic().getTopicId()).isEqualTo(topicId);
-        }
+        Optional<Topic> topic = topicRepository.findById(topicId);
+        List<Post>posts = postRepository.findAllByTopicOrderByCommentsCreatedOnDesc(topic.get(),PageRequest.of(
+                0,10)
+        );
+        String a = "b";
+        posts.forEach(post -> System.out.println(post.getTopic()));
+//        for(Post p:posts){
+//            assertThat(p.getTopic().getTopicId()).isEqualTo(topicId);
+//        }
     }
 
 
@@ -137,7 +149,30 @@ public class PostRepositoryTests {
         assertThat(updatedPost.getContent()).isEqualTo(newContent);
     }
 
+    @Test
+    public void testUpdateAPostViews(){
+        Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
+        Integer currentViews = randomPost.getViews();
+        Integer newViews = NumberStringUtils.generateRandomNumber(0,20)+currentViews;
+        randomPost.setViews(newViews);
+        postRepository.save(randomPost);
+        assertThat(randomPost.getViews()).isEqualTo(newViews);
+    }
 
+    @Test
+    public void testFilterPosts() {
+        String tag = "test";
+        java.sql.Date startDate = java.sql.Date.valueOf("2020-05-05");
+        java.sql.Date endDate = java.sql.Date.valueOf("2021-05-05");
+        List<Post> posts = postRepository.filterPosts(1,tag, startDate,endDate);
+
+        for(Post p:posts){
+            assertThat(p.getTopic().getTopicId()).isEqualTo(1);
+
+            assertThat(p.getCreatedOn()).isAfterOrEqualTo(startDate).isBeforeOrEqualTo(endDate);
+        }
+
+    }
 
 }
 

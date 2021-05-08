@@ -38,7 +38,9 @@ public class TagRepositoryTests {
         List<String> tagString = tagsDB.stream().map(Tag::getTagName).collect(Collectors.toList());
         for(String t:tokens){
             if(!tagString.contains(t)){
-                Tag newTag = new Tag(t);
+                Tag newTag = new Tag().builder()
+                        .tagName(t)
+                        .build();
                 tagRepository.save(newTag);
                 tagsDB.add(newTag);
             }
