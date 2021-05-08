@@ -1,24 +1,18 @@
 package com.seneca.senecaforum.client.controller;
 
-import com.seneca.senecaforum.client.exception.BadRequestException;
 import com.seneca.senecaforum.client.exception.NotFoundException;
-import com.seneca.senecaforum.domain.Comment;
-import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Topic;
-import com.seneca.senecaforum.domain.User;
 import com.seneca.senecaforum.repository.PostRepository;
 import com.seneca.senecaforum.repository.TopicRepository;
 import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.PostService;
-import com.seneca.senecaforum.service.dto.*;
-import org.aspectj.weaver.ast.Not;
+import com.seneca.senecaforum.service.dto.CommentDto;
+import com.seneca.senecaforum.service.dto.PostDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 class CommentComparator implements Comparator<CommentDto>{
     @Override
@@ -68,35 +62,40 @@ public class TopicController {
     private UserRepository userRepository;
 
     @GetMapping
-    public ResponseEntity<Set<Topic>>getAllTopics(){
-        List<Topic>topics = topicRepository.findAll();
-        Set<Topic>topicSet = new HashSet<>();
-        for(Topic t: topics){
+    public ResponseEntity<Set<Topic>> getAllTopics() {
+        List<Topic> topics = topicRepository.findAll();
+        Set<Topic> topicSet = new HashSet<>();
+        for (Topic t : topics) {
             topicSet.add(t);
         }
         return ResponseEntity.ok(topicSet);
     }
 
-//    @GetMapping("/{topicId}/posts/size")
+    //    @GetMapping("/{topicId}/posts/size")
 //    public ResponseEntity<Integer>getNumberofPostsFromTopicID(@PathVariable Integer topicId){
 //        List<Post>posts = postRepository.findAllByTopicId(topicId);
 //        Integer postSize = posts.size();
 //        return ResponseEntity.ok(postSize);
 //    }
-    @GetMapping("/{topicId}/posts")
+    @GetMapping("/{topicId}/posts")//default:comment-desc
     public ResponseEntity<List<PostDto>> getAllPostByTopic(
             @PathVariable Integer topicId,
-            @RequestParam Integer p
-    ){
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) String start,
+            @RequestParam(required = false) String end,
+            @RequestParam(defaultValue = "1") Integer p,
+            @RequestParam(required = false) String sortBy
+    ) {
         Optional<Topic> topic = topicRepository.findById(topicId);
-        if (topic.isPresent()){
-            return ResponseEntity.ok(
-                    postService.getAllPostByTopic(topic.get(),p));
-        }else {
-            throw new NotFoundException("Topic ");
-        }
-
+            if (topic.isPresent()) {
+                return ResponseEntity.ok(
+                        postService.getAllPostByTopic(topic.get(),order,start,end,p,sortBy));
+            } else {
+                throw new NotFoundException("Topic ");
+            }
     }
+
+
 
 //    @GetMapping("/{topicId}/posts")
 //    public ResponseEntity<Set<PostDto>>getAllPostsByTopicID(
@@ -237,5 +236,4 @@ public class TopicController {
 //        //Collections.reverse(postsDto);
 //        return ResponseEntity.ok(postsDto);
 //
-//    }
 }

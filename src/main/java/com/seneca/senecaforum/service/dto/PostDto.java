@@ -1,51 +1,26 @@
 package com.seneca.senecaforum.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.seneca.senecaforum.domain.Comment;
-import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Topic;
-import com.seneca.senecaforum.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.util.*;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostDto implements EntityDto{
+public class PostDto {
     private Integer postId;
     private String title;
     private Date createdOn;
     private UserDto author;
     private Topic topic;
-    //private TreeSet<CommentDto> comments = new TreeSet();
     private List<CommentDto> comments;
     private String tags;
     private Integer views;
-
-//    @Override
-//    public int compareTo(PostDto o) {
-//        if(this.comments.size()>0&&o.comments.size()>0){
-//            // Comment already sorts them in desc order
-//            CommentDto myRecentComment= this.comments.first();
-//            CommentDto otherRecentComment= o.comments.first();
-//            return otherRecentComment.getCreatedOn().compareTo(myRecentComment.getCreatedOn());
-//        }
-//        else if(this.comments.size()>0&&o.comments.size()==0){
-//            return -1;
-//        }
-//        else if(this.comments.size()==0&&o.comments.size()>0){
-//            return 1;
-//        }
-//        else{
-//            return o.postId.compareTo(this.postId);
-//        }
-//    }
 
     @Override
     public int hashCode() {

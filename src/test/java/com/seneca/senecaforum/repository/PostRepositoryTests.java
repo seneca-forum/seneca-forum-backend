@@ -3,12 +3,16 @@ package com.seneca.senecaforum.repository;
 import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Topic;
 import com.seneca.senecaforum.domain.User;
+import com.seneca.senecaforum.service.PostService;
+import com.seneca.senecaforum.service.dto.PostDto;
 import com.seneca.senecaforum.utils.DatabaseUtils;
 import com.seneca.senecaforum.utils.NumberStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 
@@ -120,16 +124,19 @@ public class PostRepositoryTests {
         Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
 
         int topicId = randomPost.getTopic().getTopicId();
-        Optional<Topic> topic = topicRepository.findById(topicId);
-        List<Post>posts = postRepository.findAllByTopicOrderByCommentsCreatedOnDesc(topic.get(),PageRequest.of(
+        Optional<Topic> topic = topicRepository.findById(1);
+        Page<Post> posts = postRepository.findAllByTopicOrderByCommentsCreatedOnDesc(topic.get(),PageRequest.of(
                 0,10)
         );
         String a = "b";
         posts.forEach(post -> System.out.println(post.getTopic()));
-//        for(Post p:posts){
-//            assertThat(p.getTopic().getTopicId()).isEqualTo(topicId);
-//        }
     }
+
+//    @Test
+//    public void testAPIGetAllPostsFromTopic(){
+//        Optional<Topic> topic = topicRepository.findById(1);
+//        List<PostDto> test = postService.getAllPostByTopic(topic.get(),,)
+//    }
 
 
     @Test
