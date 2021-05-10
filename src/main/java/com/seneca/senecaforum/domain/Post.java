@@ -57,12 +57,8 @@ public class Post{
     @JsonIgnore
     private Topic topic;
 
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
-    )
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="post_id")
-    @OrderBy(clause = "createdOn desc")
     private List<Comment> comments;
 
     @Column(name="post_tags")

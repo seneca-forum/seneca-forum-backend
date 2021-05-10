@@ -18,7 +18,6 @@ public class PostDto {
     private Date createdOn;
     private UserDto author;
     private Topic topic;
-    private List<CommentDto> comments;
     private String tags;
     private Integer views;
 

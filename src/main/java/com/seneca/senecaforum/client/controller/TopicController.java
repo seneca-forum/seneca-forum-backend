@@ -21,29 +21,29 @@ class CommentComparator implements Comparator<CommentDto>{
     }
 }
 
-class PostComparatorByComment implements Comparator<PostDto> {
-    @Override
-    public int compare(PostDto p1, PostDto p2) {
-        if(p1.getComments().size()>0&&p2.getComments().size()>0){
-            // Comment already sorts them in desc order
-            Collections.sort(p1.getComments(),(c1,c2)->c2.getCreatedOn().compareTo(c1.getCreatedOn()));
-            Collections.sort(p2.getComments(),(c1,c2)->c2.getCreatedOn().compareTo(c1.getCreatedOn()));
-            CommentDto myRecentComment= p1.getComments().get(0);
-            CommentDto otherRecentComment= p2.getComments().get(0);
-            return otherRecentComment.getCreatedOn().compareTo(myRecentComment.getCreatedOn());
-        }
-        else if(p1.getComments().size()>0&&p2.getComments().size()==0){
-            return -1;
-        }
-        else if(p1.getComments().size()==0&&p2.getComments().size()>0){
-            return 1;
-        }
-        else{
-            return p2.getPostId().compareTo(p1.getPostId());
-        }
-
-    }
-}
+//class PostComparatorByComment implements Comparator<PostDto> {
+//    @Override
+//    public int compare(PostDto p1, PostDto p2) {
+//        if(p1.getComments().size()>0&&p2.getComments().size()>0){
+//            // Comment already sorts them in desc order
+//            Collections.sort(p1.getComments(),(c1,c2)->c2.getCreatedOn().compareTo(c1.getCreatedOn()));
+//            Collections.sort(p2.getComments(),(c1,c2)->c2.getCreatedOn().compareTo(c1.getCreatedOn()));
+//            CommentDto myRecentComment= p1.getComments().get(0);
+//            CommentDto otherRecentComment= p2.getComments().get(0);
+//            return otherRecentComment.getCreatedOn().compareTo(myRecentComment.getCreatedOn());
+//        }
+//        else if(p1.getComments().size()>0&&p2.getComments().size()==0){
+//            return -1;
+//        }
+//        else if(p1.getComments().size()==0&&p2.getComments().size()>0){
+//            return 1;
+//        }
+//        else{
+//            return p2.getPostId().compareTo(p1.getPostId());
+//        }
+//
+//    }
+//}
 
 
 @RestController
@@ -84,12 +84,13 @@ public class TopicController {
             @RequestParam(required = false) String start,
             @RequestParam(required = false) String end,
             @RequestParam(defaultValue = "1") Integer p,
-            @RequestParam(required = false) String sortBy
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String name
     ) {
         Optional<Topic> topic = topicRepository.findById(topicId);
             if (topic.isPresent()) {
                 return ResponseEntity.ok(
-                        postService.getAllPostByTopic(topic.get(),order,start,end,p,sortBy));
+                        postService.getAllPostByTopic(topic.get(),order,start,end,p,sortBy,name));
             } else {
                 throw new NotFoundException("Topic ");
             }
