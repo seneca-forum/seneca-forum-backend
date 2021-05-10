@@ -14,14 +14,9 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
-    Page<Post> findAllByTopicOrderByCommentsCreatedOnDesc(Topic topic, Pageable pageable);
+    Page<Post> findDistinctByTopic(Topic topic,Pageable pageable);
 
-    Page<Post> findAllByTopicOrderByCommentsCreatedOnAsc(Topic topic, Pageable pageable);
-
-    Page<Post> findAllByTopic(Topic topic,Pageable pageable);
-
-    Page<Post> findAllByTopicAndTagsContainsAndCreatedOnBetween(
-            Topic topic, String tags, Date startDate, Date endDate, Pageable pageable);
+    Page<Post> findDistinctByTopicAndTagsContains(Topic topic, String tags, Pageable pageable);
 
 
 //    @Query("FROM Post p WHERE p.topic.topicId = :topicId and p.tags like %:tags%")

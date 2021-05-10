@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 public class PostService {
@@ -25,38 +26,41 @@ public class PostService {
     private TopicRepository topicRepository;
 
     public List<PostDto> getAllPostByTopic(
-            Topic topic,String orderBy,String start,String end,int page,String sortBy
+            Topic topic,String orderBy,String start,String end,int page,String sortBy,String tags
     ){
         Page<Post> posts = null;
-        if (Objects.nonNull(sortBy)){
-            if (sortBy.equals("comment")){
+        // sort by not null
+        if (Objects.nonNull(sortBy) && Objects.isNull(start) && Objects.isNull(end)){
+            if (sortBy.equals("posts")){// sort by post and order by lastest or oldest created on post
                 if (orderBy.equals("asc"))
-                    posts = postRepository.findAllByTopic(
+                    posts = postRepository.findDistinctByTopic(
                             topic,PageRequest.of(page-1,10,Sort.by(Sort.Direction.ASC,"createdOn")));
-                else if (orderBy.equals("desc"))
-                    posts = postRepository.findAllByTopic(
+                else
+                    posts = postRepository.findDistinctByTopic(
                             topic,PageRequest.of(page-1,10,Sort.by(Sort.Direction.DESC,"createdOn")));
             }
-//            else {
-//                posts = postRepository.findAllByTopicAndTagsContainsAndCreatedOnBetween(
-//                        topic,sortBy.
-//                )
-//            }
-        }else{
+            else if (sortBy.equals("tags")){// sort by tags and order by lastest or oldest created on post
+                if (orderBy.equals("asc"))
+                    posts = postRepository.findDistinctByTopicAndTagsContains(
+                            topic,tags,PageRequest.of(page-1,10,Sort.by(Sort.Direction.ASC,"createdOn")));
+                else
+                    posts = postRepository.findDistinctByTopicAndTagsContains(
+                            topic,tags,PageRequest.of(page-1,10,Sort.by(Sort.Direction.DESC,"createdOn")));
+            }
+        }else{ //sort by comment created on oldest
             if (Objects.nonNull(orderBy) && orderBy.equals("asc")){
-                posts = postRepository.findAllByTopicOrderByCommentsCreatedOnAsc(
-                        topic, PageRequest.of(page-1, 10)
+                posts = postRepository.findDistinctByTopic(
+                        topic,
+                        PageRequest.of(page-1,10,Sort.by(Sort.Direction.ASC,"comments.createdOn"))
                 );
-            }else {
-                posts = postRepository.findAllByTopicOrderByCommentsCreatedOnDesc(
-                        topic, PageRequest.of(page-1,10));
+            }else { //sort by comment created on lastest(default)
+                posts = postRepository.findDistinctByTopic(
+                        topic,
+                        PageRequest.of(page-1,10,Sort.by(Sort.Direction.DESC,"comments.createdOn"))
+                );
             }
         }
-//        ModelMapper modelMapper = new ModelMapper();
-//        List<PostDto> postDtos = modelMapper.map(posts,new TypeToken<List<PostDto>>(){}.getType());
-//        String a = "b";
-        List<PostDto> a = MapperUtils.getInstance().mapperList(posts.getContent(),PostDto.class);
-        return MapperUtils.getInstance().mapperList(posts.getContent(),PostDto.class);
+        return MapperUtils.mapperList(posts.getContent(),PostDto.class);
     }
 
 

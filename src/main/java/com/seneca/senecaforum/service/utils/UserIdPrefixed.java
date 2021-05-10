@@ -40,6 +40,5 @@ public class UserIdPrefixed extends SequenceStyleGenerator {
                 NUMBER_FORMAT_PARAMETER,params,NUMBER_FORMAT_DEFAULT).replace("%","%2$");
         this.format = "%1$s"+codeNumberSeparator + numberFormat;
 
-
     }
 }
