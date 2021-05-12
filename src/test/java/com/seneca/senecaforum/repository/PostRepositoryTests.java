@@ -5,6 +5,7 @@ import com.seneca.senecaforum.domain.Topic;
 import com.seneca.senecaforum.domain.User;
 import com.seneca.senecaforum.service.PostService;
 import com.seneca.senecaforum.service.dto.PostDto;
+import com.seneca.senecaforum.service.utils.ApplicationUtils;
 import com.seneca.senecaforum.utils.DatabaseUtils;
 import com.seneca.senecaforum.utils.NumberStringUtils;
 import org.junit.jupiter.api.Test;
@@ -166,19 +167,14 @@ public class PostRepositoryTests {
         assertThat(randomPost.getViews()).isEqualTo(newViews);
     }
 
+    @Autowired
+    private PostService postService;
+
     @Test
-    public void testFilterPosts() {
-        String tag = "test";
-        java.sql.Date startDate = java.sql.Date.valueOf("2020-05-05");
-        java.sql.Date endDate = java.sql.Date.valueOf("2021-05-05");
-        List<Post> posts = postRepository.filterPosts(1,tag, startDate,endDate);
-
-        for(Post p:posts){
-            assertThat(p.getTopic().getTopicId()).isEqualTo(1);
-
-            assertThat(p.getCreatedOn()).isAfterOrEqualTo(startDate).isBeforeOrEqualTo(endDate);
-        }
-
+    public void testCustomFilterPost() throws ParseException {
+        Topic topic = topicRepository.findById(4).get();
+//        List<Post> posts= postRepository.findByFilterDateAndTags(topic,null, ApplicationUtils.convertToDate("2021-05-06"),new Date());
+        String a = "b";
     }
 
 }

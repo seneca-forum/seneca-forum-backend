@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.*;
 
 class CommentComparator implements Comparator<CommentDto>{
@@ -86,7 +87,7 @@ public class TopicController {
             @RequestParam(defaultValue = "1") Integer p,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String name
-    ) {
+    ) throws ParseException {
         Optional<Topic> topic = topicRepository.findById(topicId);
             if (topic.isPresent()) {
                 return ResponseEntity.ok(
