@@ -18,6 +18,7 @@ public class PostDto {
     private Date createdOn;
     private UserDto author;
     private Topic topic;
+    private CommentDto lastComment;
     private String tags;
     private Integer views;
 

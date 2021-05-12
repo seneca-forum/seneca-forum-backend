@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Temporal;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -16,13 +18,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     Page<Post> findDistinctByTopic(Topic topic,Pageable pageable);
 
-    Page<Post> findDistinctByTopicAndTagsContains(Topic topic, String tags, Pageable pageable);
-
-
-//    @Query("FROM Post p WHERE p.topic.topicId = :topicId and p.tags like %:tags%")
-//    List<Post> filterPosts(int topicId, String tags);
-
-    @Query("FROM Post p where p.topic.topicId=:topicId and p.tags like %:tags% and p.createdOn between :startDate and :endDate")
-    List<Post> filterPosts(int topicId, String tags, Date startDate, Date endDate);
+    @Query("FROM Post p WHERE p.topic =:topic " +
+            "AND (:startDate is null or p.createdOn >= :startDate) " +
+            "AND (:endDate is null or p.createdOn <= :endDate) " +
+            "AND (:tags is null or p.tags LIKE %:tags%) ")
+    Page<Post> findByFilterDateAndTags(Topic topic,String tags, Date startDate, Date endDate,Pageable pageable);
 
 }

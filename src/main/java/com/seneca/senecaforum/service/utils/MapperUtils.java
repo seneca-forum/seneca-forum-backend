@@ -2,8 +2,8 @@ package com.seneca.senecaforum.service.utils;
 
 import org.modelmapper.ModelMapper;
 
+import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MapperUtils {
@@ -14,5 +14,10 @@ public class MapperUtils {
                 .stream()
                 .map(element -> modelMapper.map(element,targetClass))
                 .collect(Collectors.toList());
+    }
+
+    public static <S,T> T mapperObject(S source, Class<T> targetObject){
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(source, (Type) targetObject);
     }
 }
