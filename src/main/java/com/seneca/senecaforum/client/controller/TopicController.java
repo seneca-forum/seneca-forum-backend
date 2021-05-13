@@ -1,5 +1,6 @@
 package com.seneca.senecaforum.client.controller;
 
+import com.seneca.senecaforum.client.exception.ErrorConstants;
 import com.seneca.senecaforum.client.exception.NotFoundException;
 import com.seneca.senecaforum.domain.Topic;
 import com.seneca.senecaforum.repository.PostRepository;
@@ -93,7 +94,7 @@ public class TopicController {
                 return ResponseEntity.ok(
                         postService.getAllPostByTopic(topic.get(),order,start,end,p,sortBy,name));
             } else {
-                throw new NotFoundException("Topic ");
+                throw new NotFoundException("Topic "+ ErrorConstants.NOT_FOUND);
             }
     }
 

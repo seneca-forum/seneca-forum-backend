@@ -21,6 +21,7 @@ public class PostDto {
     private CommentDto lastComment;
     private String tags;
     private Integer views;
+    private Integer noOfComments;
 
     @Override
     public int hashCode() {

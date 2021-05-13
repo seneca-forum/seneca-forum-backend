@@ -31,7 +31,6 @@ public class PostService {
             Topic topic,String orderBy,String start,String end,int page,String sortBy,String tags
     ) throws ParseException {
         Page<Post> posts = null;
-        // sort by not null
         boolean checkOder = Objects.nonNull(orderBy);
         if (Objects.nonNull(sortBy)){
             if (Objects.isNull(start) && Objects.isNull(end)){
@@ -71,13 +70,15 @@ public class PostService {
                 );
             }
         }
-        if (posts.getSize() == 0)
+        if (posts.getSize() == 0){
             return null;
+        }
         List<PostDto> postPage = MapperUtils.mapperList(posts.getContent(),PostDto.class);
         for (int i = 0;i < posts.getTotalElements();++i){
             if (posts.getContent().get(i).getComments().size() == 0) continue;
             postPage.get(i).setLastComment(
                     MapperUtils.mapperObject(posts.getContent().get(i).getComments().get(0), CommentDto.class));
+            postPage.get(i).setNoOfComments(posts.getContent().get(i).getComments().size());
         }
         return postPage;
     }
