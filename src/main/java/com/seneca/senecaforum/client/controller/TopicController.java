@@ -1,5 +1,6 @@
 package com.seneca.senecaforum.client.controller;
 
+import com.seneca.senecaforum.client.exception.ErrorConstants;
 import com.seneca.senecaforum.client.exception.NotFoundException;
 import com.seneca.senecaforum.domain.Topic;
 import com.seneca.senecaforum.repository.PostRepository;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.*;
 
 class CommentComparator implements Comparator<CommentDto>{
@@ -86,13 +88,13 @@ public class TopicController {
             @RequestParam(defaultValue = "1") Integer p,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String name
-    ) {
+    ) throws ParseException {
         Optional<Topic> topic = topicRepository.findById(topicId);
             if (topic.isPresent()) {
                 return ResponseEntity.ok(
                         postService.getAllPostByTopic(topic.get(),order,start,end,p,sortBy,name));
             } else {
-                throw new NotFoundException("Topic ");
+                throw new NotFoundException("Topic "+ ErrorConstants.NOT_FOUND);
             }
     }
 
