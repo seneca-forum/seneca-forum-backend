@@ -24,9 +24,6 @@ public class PostService {
     @Autowired
     private PostRepository postRepository;
 
-    @Autowired
-    private TopicRepository topicRepository;
-
     public List<PostDto> getAllPostByTopic(
             Topic topic,String orderBy,String start,String end,int page,String sortBy,String tags
     ) throws ParseException {
