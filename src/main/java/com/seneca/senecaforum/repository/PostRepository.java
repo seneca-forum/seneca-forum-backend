@@ -15,7 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     Page<Post> findDistinctByTopic(Topic topic,Pageable pageable);
 
-    @Query("FROM Post p WHERE p.topic =:topic " +
+    @Query("FROM Post p WHERE p.topic = :topic " +
             "AND (:startDate is null or p.createdOn >= :startDate) " +
             "AND (:endDate is null or p.createdOn <= :endDate) " +
             "AND (:tags is null or p.tags LIKE %:tags%) ")
