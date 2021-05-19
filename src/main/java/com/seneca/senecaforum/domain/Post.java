@@ -59,6 +59,7 @@ public class Post{
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="post_id")
+    @OrderBy(clause = "createdOn")
     private List<Comment> comments;
 
     @Column(name="post_tags")
