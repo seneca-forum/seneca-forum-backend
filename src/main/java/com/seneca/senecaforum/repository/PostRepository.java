@@ -9,16 +9,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Integer> {
+public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRepository {
 
-    Page<Post> findDistinctByTopic(Topic topic,Pageable pageable);
+    List<Post> findPostsByTopic(Topic topic,Pageable pageable);
 
     @Query("FROM Post p WHERE p.topic = :topic " +
             "AND (:startDate is null or p.createdOn >= :startDate) " +
             "AND (:endDate is null or p.createdOn <= :endDate) " +
             "AND (:tags is null or p.tags LIKE %:tags%) ")
-    Page<Post> findByFilterDateAndTags(Topic topic,String tags, Date startDate, Date endDate,Pageable pageable);
-
+    List<Post> findByFilterDateAndTags(Topic topic, String tags, Date startDate, Date endDate, Pageable pageable);
 }

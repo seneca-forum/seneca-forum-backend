@@ -3,7 +3,6 @@ package com.seneca.senecaforum.client.controller;
 import com.seneca.senecaforum.client.exception.ErrorConstants;
 import com.seneca.senecaforum.client.exception.NotFoundException;
 import com.seneca.senecaforum.domain.Topic;
-import com.seneca.senecaforum.repository.PostRepository;
 import com.seneca.senecaforum.repository.TopicRepository;
 import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.PostService;
@@ -57,8 +56,6 @@ public class TopicController {
     @Autowired
     private PostService postService;
 
-    @Autowired
-    private PostRepository postRepository;
 
     @Autowired
     private UserRepository userRepository;
