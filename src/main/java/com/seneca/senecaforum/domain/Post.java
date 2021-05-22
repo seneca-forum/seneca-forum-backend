@@ -1,6 +1,6 @@
 package com.seneca.senecaforum.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.hibernate.annotations.OrderBy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +27,7 @@ public class Post{
     @Column(name = "title",nullable = false)
     private String title;
 
-    @Column(name = "content",nullable = false)
+    @Column(name = "content",nullable = false,length = 8000)
     private String content;
 
     @Column(name = "created_on",nullable = false)
@@ -54,7 +54,6 @@ public class Post{
             referencedColumnName="topic_id",
             foreignKey=@ForeignKey(name = "FK_TOPIC_POST")
     )
-    @JsonIgnore
     private Topic topic;
 
     @OneToMany(cascade = CascadeType.ALL)

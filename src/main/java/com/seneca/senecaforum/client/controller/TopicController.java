@@ -3,6 +3,7 @@ package com.seneca.senecaforum.client.controller;
 import com.seneca.senecaforum.client.exception.ErrorConstants;
 import com.seneca.senecaforum.client.exception.NotFoundException;
 import com.seneca.senecaforum.domain.Topic;
+import com.seneca.senecaforum.repository.PostRepository;
 import com.seneca.senecaforum.repository.TopicRepository;
 import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.PostService;
@@ -54,6 +55,9 @@ public class TopicController {
     private TopicRepository topicRepository;
 
     @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
     private PostService postService;
 
 
@@ -68,6 +72,12 @@ public class TopicController {
             topicSet.add(t);
         }
         return ResponseEntity.ok(topicSet);
+    }
+
+    @GetMapping("/{topicId}/posts/size")
+    public ResponseEntity<Integer>getPostSizeFromTopicID(@PathVariable Integer topicId){
+        int postSize = postRepository.getPostSizeByTopicId(topicId);
+        return ResponseEntity.ok(postSize);
     }
 
     //    @GetMapping("/{topicId}/posts/size")

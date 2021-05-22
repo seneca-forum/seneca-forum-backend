@@ -1,5 +1,6 @@
 package com.seneca.senecaforum.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.seneca.senecaforum.service.utils.UserIdPrefixed;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,8 +37,6 @@ public class User {
     @Column(name = "email",length = 50,unique = true)
     private String email;
 
-    @Column(name = "discord",length = 50)
-    private String discord;
 
     @Column(name = "username",length = 50,unique = true)
     private String username;
