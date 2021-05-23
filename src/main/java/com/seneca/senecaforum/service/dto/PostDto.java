@@ -22,6 +22,7 @@ public class PostDto {
     private String tags;
     private Integer views;
     private Integer noOfComments;
+    private String content;
 
     @Override
     public int hashCode() {

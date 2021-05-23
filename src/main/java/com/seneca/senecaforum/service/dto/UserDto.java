@@ -14,8 +14,6 @@ public class UserDto {
 
     private String email;
 
-    private String discord;
-
     private String username;
 
     private Date createdOn;

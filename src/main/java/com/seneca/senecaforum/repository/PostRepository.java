@@ -21,4 +21,7 @@ public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRe
             "AND (:endDate is null or p.createdOn <= :endDate) " +
             "AND (:tags is null or p.tags LIKE %:tags%) ")
     List<Post> findByFilterDateAndTags(Topic topic, String tags, Date startDate, Date endDate, Pageable pageable);
+
+    @Query("SELECT Count (p) FROM Post p where p.topic.topicId=:topicId")
+    int getPostSizeByTopicId(int topicId);
 }
