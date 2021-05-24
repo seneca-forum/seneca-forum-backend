@@ -45,14 +45,8 @@ public class PostService {
                         PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.ASC, "createdOn")));
         } else if (Objects.isNull(sortBy) || sortBy.equals("comments")) {
             posts = postRepository.findPostsByTopicBasedOnComment(
-                    topic, methodOrder, null, null, tags, PageRequest.of(page - 1, 10));
+                    topic, methodOrder,tags,PageRequest.of(page - 1, 10));
         }
-
-//            } else { //sort by comment created on oldest
-//                String a = "b";
-//                posts = postRepository.findPostsByTopicBasedOnComment(
-//                        topic,methodOrder,null,null,tags,PageRequest.of(page-1,10));
-//            }
         if (posts.size() == 0){
             return null;
         }

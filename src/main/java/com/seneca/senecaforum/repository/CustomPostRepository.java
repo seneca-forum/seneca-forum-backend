@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface CustomPostRepository {
 
-    List<Post> findPostsByTopicBasedOnComment(Topic topic, String methodOrder,Date start, Date end, String tags, Pageable pageable);
+    List<Post> findPostsByTopicBasedOnComment(Topic topic, String methodOrder, String tags, Pageable pageable);
 }

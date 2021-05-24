@@ -22,10 +22,9 @@ public class PostRepositoryImpl implements CustomPostRepository {
     public PostRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager.getEntityManagerFactory().createEntityManager();
     }
-
     @Override
     public List<Post> findPostsByTopicBasedOnComment(
-            Topic topic, String methodOrder, Date start,Date end, String tags, Pageable pageable) {
+            Topic topic, String methodOrder, String tags, Pageable pageable) {
         methodOrder = (Objects.isNull(methodOrder) || methodOrder.equals("desc")) ? "DESC" : "ASC";
         StringBuilder sql = new StringBuilder();
         if (methodOrder.equals("ASC"))
@@ -34,6 +33,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
             sql.append("SELECT * FROM POSTS p LEFT JOIN(SELECT c.post_id AS belongPost,MAX(created_on)AS COMMENT FROM COMMENTS c GROUP BY belongPost) AS TEMP ");
         sql.append("ON TEMP.belongPost = p.post_id ")
             .append("WHERE p.topic_id = :topicId ")
+            .append("")
             .append("AND p.post_tags LIKE :tags ")
             .append("ORDER BY IF(TEMP.COMMENT IS NULL, 1, 0),TEMP.COMMENT ").append(methodOrder)
             .append(",p.created_on ").append(methodOrder);
@@ -44,8 +44,6 @@ public class PostRepositoryImpl implements CustomPostRepository {
         q.setParameter("tags",Objects.isNull(tags) ? "%" : "%"+tags+"%");
         q.setFirstResult(pageNumber * pageSize);
         q.setMaxResults(pageSize);
-        List<Post> a = q.getResultList();
-        String b = "c";
         return q.getResultList();
     }
 }
