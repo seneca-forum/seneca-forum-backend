@@ -58,7 +58,7 @@ public class PostController {
     }
 
     @PostMapping()
-    public ResponseEntity<String>createNewPost(@RequestBody PostDto p){
+    public ResponseEntity<Post>createNewPost(@RequestBody PostDto p){
         User user = userService.getUserByUsername(p.getAuthor().getUsername());
 
         Topic topic = topicService.getTopicByTopicId(p.getTopic().getTopicId());
@@ -74,7 +74,7 @@ public class PostController {
                 throw new InternalException("Cannot create new tags");
             }
         }
-        return new ResponseEntity("Created new post successfully", HttpStatus.OK);
+        return new ResponseEntity(post, HttpStatus.OK);
     }
 
     @PostMapping("/{postId}/comments")
