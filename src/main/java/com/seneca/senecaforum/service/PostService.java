@@ -49,9 +49,9 @@ public class PostService {
                         PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.ASC, "createdOn")));
         } else if (Objects.isNull(sortBy) || sortBy.equals("comments")) {
             posts = postRepository.findPostsByTopicBasedOnComment(
-                    topic, methodOrder,tags,PageRequest.of(page - 1, 10));
+                    topic, methodOrder, tags, PageRequest.of(page - 1, 10));
         }
-        if (posts.size() == 0){
+        if (posts.size() == 0) {
             return null;
         }
         List<PostDto> postPage = MapperUtils.mapperList(posts, PostDto.class);
@@ -59,27 +59,32 @@ public class PostService {
         for (int i = 0; i < posts.size(); ++i) {
             int noOfComments = posts.get(i).getComments().size();
             if (noOfComments == 0) continue;
-            postPage.get(i).setLastComment(
-                    MapperUtils.mapperObject(posts.get(i).getComments().get(noOfComments - 1), CommentDto.class));
+            if (Objects.isNull(methodOrder) || methodOrder.equals("desc")) {
+                postPage.get(i).setLastComment(
+                        MapperUtils.mapperObject(posts.get(i).getComments().get(noOfComments - 1), CommentDto.class));
+            } else {
+                postPage.get(i).setLastComment(
+                        MapperUtils.mapperObject(posts.get(i).getComments().get(0), CommentDto.class));
+            }
             postPage.get(i).setNoOfComments(noOfComments);
         }
         return postPage;
+
     }
 
     public Post getPostByPostId(Integer postId){
         Post post = null;
-        try{
+        try {
             post = postRepository.findById(postId).get();
+        } catch (Exception ex) {
+            throw new BadRequestException("Found nothing with postId " + postId);
         }
-        catch(Exception ex){
-            throw new BadRequestException("Found nothing with postId "+postId);
-        }
-        Collections.sort(post.getComments(),(c1, c2)->c2.getCreatedOn().compareTo(c1.getCreatedOn()));
+        Collections.sort(post.getComments(), (c1, c2) -> c2.getCreatedOn().compareTo(c1.getCreatedOn()));
         return post;
     }
 
-    public Post createNewPost(PostDto p, User user, Topic topic){
-        Post post = new Post().builder()
+    public Post createNewPost (PostDto p, User user, Topic topic){
+        Post post = Post.builder()
                 .title(p.getTitle())
                 .content(p.getContent())
                 .createdOn(new Date())
@@ -92,8 +97,8 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Post createNewComment(Post post, User user, CommentDto c){
-        Comment newComment = new Comment().builder()
+    public Post createNewComment (Post post, User user, CommentDto c){
+        Comment newComment = Comment.builder()
                 .commenter(user)
                 .content(c.getContent())
                 .createdOn(new Date())
@@ -101,11 +106,11 @@ public class PostService {
                 .build();
         post.addComment(newComment);
         Post savedPost = postRepository.save(post);
-        Collections.sort(savedPost.getComments(),(c1,c2)->c2.getCreatedOn().compareTo(c1.getCreatedOn()));
+        Collections.sort(savedPost.getComments(), (c1, c2) -> c2.getCreatedOn().compareTo(c1.getCreatedOn()));
         return post;
     }
 
-    public Post editAPost(PostDto p){
+    public Post editAPost (PostDto p){
         Post savedPost = postRepository.findById(p.getPostId()).get();
         savedPost.setContent(p.getContent());
         savedPost.setTags(p.getTags());
@@ -113,6 +118,4 @@ public class PostService {
         savedPost.setTopic(p.getTopic());
         return postRepository.save(savedPost);
     }
-
-
 }
