@@ -16,13 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.util.*;
 
-class CommentComparator implements Comparator<CommentDto>{
-    @Override
-    public int compare(CommentDto o1, CommentDto o2) {
-        return o2.getCreatedOn().compareTo(o1.getCreatedOn());
-    }
-}
-
 //class PostComparatorByComment implements Comparator<PostDto> {
 //    @Override
 //    public int compare(PostDto p1, PostDto p2) {
@@ -80,26 +73,20 @@ public class TopicController {
         return ResponseEntity.ok(postSize);
     }
 
-    //    @GetMapping("/{topicId}/posts/size")
-//    public ResponseEntity<Integer>getNumberofPostsFromTopicID(@PathVariable Integer topicId){
-//        List<Post>posts = postRepository.findAllByTopicId(topicId);
-//        Integer postSize = posts.size();
-//        return ResponseEntity.ok(postSize);
-//    }
     @GetMapping("/{topicId}/posts")//default:comment-desc
     public ResponseEntity<List<PostDto>> getAllPostByTopic(
             @PathVariable Integer topicId,
             @RequestParam(required = false) String order,
-            @RequestParam(required = false) String start,
-            @RequestParam(required = false) String end,
+            @RequestParam(required = false) String s,
+            @RequestParam(required = false) String e,
             @RequestParam(defaultValue = "1") Integer p,
             @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String name
+            @RequestParam(required = false) String tags
     ) throws ParseException {
         Optional<Topic> topic = topicRepository.findById(topicId);
             if (topic.isPresent()) {
                 return ResponseEntity.ok(
-                        postService.getAllPostByTopic(topic.get(),order,start,end,p,sortBy,name));
+                        postService.getAllPostByTopic(topic.get(),order,s,e,p,sortBy,tags));
             } else {
                 throw new NotFoundException("Topic "+ ErrorConstants.NOT_FOUND);
             }
