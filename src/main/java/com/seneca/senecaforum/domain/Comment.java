@@ -35,5 +35,9 @@ public class Comment {
             foreignKey = @ForeignKey(name = "FK_COMMENTER_COMMENT")
     )
     private User commenter;
+
+    @Column(nullable = false)
+    private Boolean enabled;
+
 }
 

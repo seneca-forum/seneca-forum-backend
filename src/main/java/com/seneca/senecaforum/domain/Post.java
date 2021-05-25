@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,9 +68,11 @@ public class Post{
     @Column(name = "views",nullable = false)
     private Integer views;
 
+
     public void addComment(Comment comment){
-        if(comments == null)
-            comments = new ArrayList<>();
+        if(this.comments == null){
+            this.comments = new ArrayList<>();
+        }
         this.comments.add(comment);
     }
 

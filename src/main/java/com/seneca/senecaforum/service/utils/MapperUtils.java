@@ -18,6 +18,6 @@ public class MapperUtils {
 
     public static <S,T> T mapperObject(S source, Class<T> targetObject){
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(source, (Type) targetObject);
+        return modelMapper.map(source, targetObject);
     }
 }
