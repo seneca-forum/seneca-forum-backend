@@ -16,8 +16,8 @@ public class CommentDto {
 
     private UserDto commenter;
 
-//    @Override
-//    public int compareTo(CommentDto o) {
-//        return o.createdOn.compareTo(createdOn);
-//    }
+    private String content;
+
+    private Boolean enabled;
+
 }
