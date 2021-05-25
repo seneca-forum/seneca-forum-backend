@@ -17,6 +17,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        #to fix the bug 'Failed to lazily initialize a collection of role could not initialize proxy – no Session'
+        enable_lazy_load_no_trans: true
 #  servlet:
 #    multipart:
 #      enabled: true
