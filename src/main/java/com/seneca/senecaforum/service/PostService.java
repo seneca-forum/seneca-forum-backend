@@ -71,7 +71,8 @@ public class PostService {
         return postPage;
 
     }
-    public Post getPostByPostId (Integer postId){
+
+    public Post getPostByPostId(Integer postId){
         Post post = null;
         try {
             post = postRepository.findById(postId).get();
