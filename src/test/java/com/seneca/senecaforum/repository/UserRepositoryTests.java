@@ -25,12 +25,10 @@ public class UserRepositoryTests {
     public void testCreateNewUser(){
         int before = userRepository.findAll().size();
         String email = NumberStringUtils.generateRandomString(5,false,false,true,false)+"@gmail.com";
-        String discord = NumberStringUtils.generateRandomString(5,false,false,true,false);
         String username = NumberStringUtils.generateRandomString(8,false,false,true,false);
         String password = NumberStringUtils.generateRandomString(12,true,true,true,false);
         User user = new User().builder()
                 .email(email)
-                .discord(discord)
                 .username(username)
                 .password(password)
                 .createdOn(new Date())

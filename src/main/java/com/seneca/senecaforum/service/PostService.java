@@ -3,18 +3,17 @@ package com.seneca.senecaforum.service;
 import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Topic;
 import com.seneca.senecaforum.repository.PostRepository;
-import com.seneca.senecaforum.repository.TopicRepository;
 import com.seneca.senecaforum.service.dto.CommentDto;
 import com.seneca.senecaforum.service.dto.PostDto;
 import com.seneca.senecaforum.service.utils.ApplicationUtils;
 import com.seneca.senecaforum.service.utils.MapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,59 +24,48 @@ public class PostService {
     private PostRepository postRepository;
 
     public List<PostDto> getAllPostByTopic(
-            Topic topic,String orderBy,String start,String end,int page,String sortBy,String tags
+            Topic topic,String methodOrder,String start,String end,int page,String sortBy,String tags
     ) throws ParseException {
-        Page<Post> posts = null;
-        boolean checkOder = Objects.nonNull(orderBy);
-        if (Objects.nonNull(sortBy)){
-            if (Objects.isNull(start) && Objects.isNull(end)){
-                if (sortBy.equals("posts")){// sort by post and order by lastest or oldest created on post
-                    if (checkOder && orderBy.equals("asc"))
-                        posts = postRepository.findDistinctByTopic(
-                                topic,PageRequest.of(page-1,10,Sort.by(Sort.Direction.ASC,"createdOn")));
-                    else
-                        posts = postRepository.findDistinctByTopic(
-                                topic,PageRequest.of(page-1,10,Sort.by(Sort.Direction.DESC,"createdOn")));
-                }
-                else if (sortBy.equals("tags")){// sort by tags and order by lastest or oldest created on post
-                    if (checkOder && orderBy.equals("asc"))
-                        posts = postRepository.findByFilterDateAndTags(
-                                topic,tags, null,null,
-                                PageRequest.of(page-1,10,Sort.by(Sort.Direction.ASC,"createdOn")));
-                    else
-                        posts = postRepository.findByFilterDateAndTags(
-                                topic,tags, null,null,
-                                PageRequest.of(page-1,10,Sort.by(Sort.Direction.DESC,"createdOn")));
-                }
-            }else {
-                //sort by start and end date including tags or not
-                posts = postRepository.findByFilterDateAndTags(
-                        topic,tags, ApplicationUtils.convertToDate(start),ApplicationUtils.convertToDate(end),
-                        PageRequest.of(page-1,10,Sort.by(Sort.Direction.DESC,"createdOn")));
-            }
+        List<Post> posts = null;
+        Date startDate = null;
+        Date endDate = null;
+        if (Objects.nonNull(start) && Objects.nonNull(end)) {
+            startDate = ApplicationUtils.convertToDate(start);
+            endDate = ApplicationUtils.convertToDate(end);
         }
-        else{ //sort by comment created on oldest
-            if (checkOder && orderBy.equals("asc")){
-                posts = postRepository.findDistinctByTopic(topic,
-                        PageRequest.of(page-1,10,Sort.by(Sort.Direction.ASC,"comments.createdOn"))
-                );
-            }else { //sort by comment created on lastest(DEFAULT)
-                posts = postRepository.findDistinctByTopic(topic,
-                        PageRequest.of(page-1,10,Sort.by(Sort.Direction.DESC,"comments.createdOn"))
-                );
-            }
+        boolean checkOrder = Objects.isNull(methodOrder);
+        if (Objects.nonNull(sortBy) && sortBy.equals("posts")) {
+            if (checkOrder || methodOrder.equals("desc"))
+                posts = postRepository.findPostsByTopicBasedOnPost(
+                        topic, tags, startDate, endDate,
+                        PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.DESC, "createdOn")));
+            else
+                posts = postRepository.findPostsByTopicBasedOnPost(
+                        topic, tags, startDate, endDate,
+                        PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.ASC, "createdOn")));
+        } else if (Objects.isNull(sortBy) || sortBy.equals("comments")) {
+            posts = postRepository.findPostsByTopicBasedOnComment(
+                    topic, methodOrder,tags,PageRequest.of(page - 1, 10));
         }
-        if (posts.getSize() == 0){
+        if (posts.size() == 0){
             return null;
         }
-        List<PostDto> postPage = MapperUtils.mapperList(posts.getContent(),PostDto.class);
-        for (int i = 0;i < posts.getTotalElements();++i){
-            if (posts.getContent().get(i).getComments().size() == 0) continue;
-            postPage.get(i).setLastComment(
-                    MapperUtils.mapperObject(posts.getContent().get(i).getComments().get(0), CommentDto.class));
-            postPage.get(i).setNoOfComments(posts.getContent().get(i).getComments().size());
+            List<PostDto> postPage = MapperUtils.mapperList(posts, PostDto.class);
+            String a = "b";
+            for (int i = 0; i < posts.size(); ++i) {
+                int noOfComments = posts.get(i).getComments().size();
+                if (noOfComments == 0) continue;
+                if(Objects.isNull(methodOrder) || methodOrder.equals("desc")){
+                    postPage.get(i).setLastComment(
+                            MapperUtils.mapperObject(posts.get(i).getComments().get(noOfComments-1), CommentDto.class));
+                }else{
+                    postPage.get(i).setLastComment(
+                            MapperUtils.mapperObject(posts.get(i).getComments().get(0), CommentDto.class));
+                }
+                postPage.get(i).setNoOfComments(noOfComments);
+            }
+            return postPage;
+
         }
-        return postPage;
-    }
 
 }
