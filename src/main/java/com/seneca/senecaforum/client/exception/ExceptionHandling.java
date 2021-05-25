@@ -31,7 +31,7 @@ public class ExceptionHandling extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex,error,new HttpHeaders(),HttpStatus.BAD_REQUEST,request);
     }
 
-    @ExceptionHandler(value={BadRequestException.class})
+    @ExceptionHandler(value={InternalException.class})
     protected ResponseEntity<Object>handleInternalException(RuntimeException ex,WebRequest request){
         String path = ((ServletWebRequest)request).getRequest().getRequestURI();
         ErrorResponse error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),ex.getMessage(),path);
