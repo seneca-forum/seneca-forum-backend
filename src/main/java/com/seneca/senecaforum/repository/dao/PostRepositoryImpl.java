@@ -41,7 +41,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
         int pageSize = pageable.getPageSize();
         Query q = entityManager.createNativeQuery(sql.toString(),Post.class);
         q.setParameter("topicId",topic.getTopicId());
-        q.setParameter("tags",Objects.isNull(tags) ? "%" : "%"+tags+"%");
+        q.setParameter("tags",Objects.isNull(tags) ? "%%" : "%"+tags+"%");
         q.setFirstResult(pageNumber * pageSize);
         q.setMaxResults(pageSize);
         return q.getResultList();

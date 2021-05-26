@@ -18,10 +18,11 @@ public class PostDto {
     private Date createdOn;
     private UserDto author;
     private Topic topic;
-    private CommentDto lastComment;
+//    private CommentDto lastComment;
+    private List<CommentDto> comments;
     private String tags;
     private Integer views;
-    private Integer noOfComments;
+    //private Integer noOfComments;
     private String content;
 
     @Override
