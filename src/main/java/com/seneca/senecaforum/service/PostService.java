@@ -16,10 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -55,18 +52,26 @@ public class PostService {
             return null;
         }
         List<PostDto> postPage = MapperUtils.mapperList(posts, PostDto.class);
-        String a = "b";
         for (int i = 0; i < posts.size(); ++i) {
-            int noOfComments = posts.get(i).getComments().size();
-            if (noOfComments == 0) continue;
+//            int noOfComments = posts.get(i).getComments().size();
+//            if (noOfComments == 0) continue;
             if (Objects.isNull(methodOrder) || methodOrder.equals("desc")) {
-                postPage.get(i).setLastComment(
-                        MapperUtils.mapperObject(posts.get(i).getComments().get(noOfComments - 1), CommentDto.class));
+//                postPage.get(i).setLastComment(
+//                        //MapperUtils.mapperObject(posts.get(i).getComments().get(noOfComments - 1), CommentDto.class));
+//                        MapperUtils.mapperObject(posts.get(i).getComments().get(posts.get(i).getComments().size()), CommentDto.class));
+                postPage.get(i).getComments().sort((c1,c2)->c2.getCreatedOn().compareTo(c1.getCreatedOn()));
             } else {
-                postPage.get(i).setLastComment(
-                        MapperUtils.mapperObject(posts.get(i).getComments().get(0), CommentDto.class));
+//                postPage.get(i).setLastComment(
+//                        MapperUtils.mapperObject(posts.get(i).getComments().get(0), CommentDto.class));
             }
-            postPage.get(i).setNoOfComments(noOfComments);
+//            postPage.get(i).setNoOfComments(noOfComments);
+//            List<Comment> cmts = posts.get(i).getComments();
+//            List<CommentDto>cmtsDto = new ArrayList<>();
+//            for(int j = 0; j < cmts.size(); j++){
+//                CommentDto cmtDto = MapperUtils.mapperObject(cmts.get(j),CommentDto.class);
+//                cmtsDto.add(cmtDto);
+//            }
+
         }
         return postPage;
 
