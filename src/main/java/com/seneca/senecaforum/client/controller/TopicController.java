@@ -7,8 +7,7 @@ import com.seneca.senecaforum.repository.PostRepository;
 import com.seneca.senecaforum.repository.TopicRepository;
 import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.PostService;
-import com.seneca.senecaforum.service.dto.CommentDto;
-import com.seneca.senecaforum.service.dto.PostDto;
+import com.seneca.senecaforum.service.dto.PostViewDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -74,7 +73,7 @@ public class TopicController {
     }
 
     @GetMapping("/{topicId}/posts")//default:comment-desc
-    public ResponseEntity<List<PostDto>> getAllPostByTopic(
+    public ResponseEntity<List<PostViewDto>> getAllPostByTopic(
             @PathVariable Integer topicId,
             @RequestParam(required = false) String order,
             @RequestParam(required = false) String s,

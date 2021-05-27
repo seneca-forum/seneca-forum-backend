@@ -12,17 +12,15 @@ import java.util.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostDto {
+public class PostDetailDto {
     private Integer postId;
     private String title;
     private Date createdOn;
     private UserDto author;
     private Topic topic;
-//    private CommentDto lastComment;
     private List<CommentDto> comments;
     private String tags;
     private Integer views;
-    //private Integer noOfComments;
     private String content;
 
     @Override
@@ -36,14 +34,14 @@ public class PostDto {
         if(obj==this){
             return true;
         }
-        if(!(obj instanceof PostDto)){
+        if(!(obj instanceof PostDetailDto)){
             return false;
         }
-        PostDto postDto = (PostDto) obj;
-        if(this.postId==null&&postDto.getPostId()!=null){
+        PostDetailDto postDetailDto = (PostDetailDto) obj;
+        if(this.postId==null&& postDetailDto.getPostId()!=null){
             return false;
         }
-        else if(this.postId!=null && !this.postId.equals(postDto.getPostId())){
+        else if(this.postId!=null && !this.postId.equals(postDetailDto.getPostId())){
             return false;
         }
         return true;

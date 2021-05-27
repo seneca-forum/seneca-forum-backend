@@ -1,6 +1,5 @@
 package com.seneca.senecaforum.client.controller;
 
-import com.seneca.senecaforum.client.exception.BadRequestException;
 import com.seneca.senecaforum.client.exception.InternalException;
 import com.seneca.senecaforum.domain.*;
 import com.seneca.senecaforum.repository.PostRepository;
@@ -12,16 +11,13 @@ import com.seneca.senecaforum.service.TagService;
 import com.seneca.senecaforum.service.TopicService;
 import com.seneca.senecaforum.service.UserService;
 import com.seneca.senecaforum.service.dto.CommentDto;
-import com.seneca.senecaforum.service.dto.PostDto;
-import com.seneca.senecaforum.service.utils.MapperUtils;
+import com.seneca.senecaforum.service.dto.PostDetailDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -58,7 +54,7 @@ public class PostController {
     }
 
     @PostMapping()
-    public ResponseEntity<Post>createNewPost(@RequestBody PostDto p){
+    public ResponseEntity<Post>createNewPost(@RequestBody PostDetailDto p){
         User user = userService.getUserByUsername(p.getAuthor().getUsername());
 
         Topic topic = topicService.getTopicByTopicId(p.getTopic().getTopicId());
@@ -94,7 +90,7 @@ public class PostController {
     }
 
     @PutMapping()
-    public ResponseEntity<Post>editAPost(@RequestBody PostDto p){
+    public ResponseEntity<Post>editAPost(@RequestBody PostDetailDto p){
         Post savedPost = postService.editAPost(p);
         // store the tags
         if(p.getTags()!=null && p.getTags() != ""){

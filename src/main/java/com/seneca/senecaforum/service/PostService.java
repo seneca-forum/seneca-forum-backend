@@ -7,7 +7,8 @@ import com.seneca.senecaforum.domain.Topic;
 import com.seneca.senecaforum.domain.User;
 import com.seneca.senecaforum.repository.PostRepository;
 import com.seneca.senecaforum.service.dto.CommentDto;
-import com.seneca.senecaforum.service.dto.PostDto;
+import com.seneca.senecaforum.service.dto.PostDetailDto;
+import com.seneca.senecaforum.service.dto.PostViewDto;
 import com.seneca.senecaforum.service.utils.ApplicationUtils;
 import com.seneca.senecaforum.service.utils.MapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class PostService {
     @Autowired
     private PostRepository postRepository;
 
-    public List<PostDto> getAllPostByTopic(
+    public List<PostViewDto> getAllPostByTopic(
             Topic topic,String methodOrder,String start,String end,int page,String sortBy,String tags
     ) throws ParseException {
         List<Post> posts = null;
@@ -51,27 +52,18 @@ public class PostService {
         if (posts.size() == 0) {
             return null;
         }
-        List<PostDto> postPage = MapperUtils.mapperList(posts, PostDto.class);
+        List<PostViewDto> postPage = MapperUtils.mapperList(posts, PostViewDto.class);
         for (int i = 0; i < posts.size(); ++i) {
-//            int noOfComments = posts.get(i).getComments().size();
-//            if (noOfComments == 0) continue;
+            int noOfComments = posts.get(i).getComments().size();
+            if (noOfComments == 0) continue;
             if (Objects.isNull(methodOrder) || methodOrder.equals("desc")) {
-//                postPage.get(i).setLastComment(
-//                        //MapperUtils.mapperObject(posts.get(i).getComments().get(noOfComments - 1), CommentDto.class));
-//                        MapperUtils.mapperObject(posts.get(i).getComments().get(posts.get(i).getComments().size()), CommentDto.class));
-                postPage.get(i).getComments().sort((c1,c2)->c2.getCreatedOn().compareTo(c1.getCreatedOn()));
+                postPage.get(i).setLastComment(
+                        MapperUtils.mapperObject(posts.get(i).getComments().get(noOfComments - 1), CommentDto.class));
             } else {
-//                postPage.get(i).setLastComment(
-//                        MapperUtils.mapperObject(posts.get(i).getComments().get(0), CommentDto.class));
+                postPage.get(i).setLastComment(
+                        MapperUtils.mapperObject(posts.get(i).getComments().get(0), CommentDto.class));
             }
-//            postPage.get(i).setNoOfComments(noOfComments);
-//            List<Comment> cmts = posts.get(i).getComments();
-//            List<CommentDto>cmtsDto = new ArrayList<>();
-//            for(int j = 0; j < cmts.size(); j++){
-//                CommentDto cmtDto = MapperUtils.mapperObject(cmts.get(j),CommentDto.class);
-//                cmtsDto.add(cmtDto);
-//            }
-
+            postPage.get(i).setNoOfComments(noOfComments);
         }
         return postPage;
 
@@ -88,7 +80,7 @@ public class PostService {
         return post;
     }
 
-    public Post createNewPost (PostDto p, User user, Topic topic){
+    public Post createNewPost (PostDetailDto p, User user, Topic topic){
         Post post = Post.builder()
                 .title(p.getTitle())
                 .content(p.getContent())
@@ -115,7 +107,7 @@ public class PostService {
         return post;
     }
 
-    public Post editAPost (PostDto p){
+    public Post editAPost (PostDetailDto p){
         Post savedPost = postRepository.findById(p.getPostId()).get();
         savedPost.setContent(p.getContent());
         savedPost.setTags(p.getTags());
