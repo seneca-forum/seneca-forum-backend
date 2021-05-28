@@ -2,7 +2,6 @@ package com.seneca.senecaforum.repository;
 
 import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Topic;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRepository {
+public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRepository{
 
     List<Post> findPostsByTopic(Topic topic,Pageable pageable);
 
@@ -24,4 +23,13 @@ public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRe
 
     @Query("SELECT Count (p) FROM Post p where p.topic.topicId=:topicId")
     int getPostSizeByTopicId(int topicId);
+
+    @Query(value="select * from posts left outer join\n" +
+            "(select comments.post_id, count(*)as noOfComments from comments group by comments.post_id)\n" +
+            "as tempC on posts.post_id = tempC.post_id\n" +
+            "order by posts.views desc, tempC.noOfComments desc/*:pageable*/",
+            nativeQuery = true)
+    List<Post>getHotPosts(Pageable pageable);
+
+
 }

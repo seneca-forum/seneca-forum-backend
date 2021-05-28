@@ -21,9 +21,9 @@ import java.util.*;
 
 @Service
 public class PostService {
-
     @Autowired
     private PostRepository postRepository;
+
 
     public List<PostViewDto> getAllPostByTopic(
             Topic topic,String methodOrder,String start,String end,int page,String sortBy,String tags
@@ -115,4 +115,13 @@ public class PostService {
         savedPost.setTopic(p.getTopic());
         return postRepository.save(savedPost);
     }
+
+    public List<PostViewDto>getHotPosts(){
+        List<PostViewDto>viewPosts = null;
+        List<Post>posts = postRepository.getHotPosts(PageRequest.of(0,10));
+        viewPosts = MapperUtils.mapperList(posts,PostViewDto.class);
+
+        return viewPosts;
+    }
+
 }

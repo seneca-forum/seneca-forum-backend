@@ -2,16 +2,10 @@ package com.seneca.senecaforum.client.controller;
 
 import com.seneca.senecaforum.client.exception.InternalException;
 import com.seneca.senecaforum.domain.*;
-import com.seneca.senecaforum.repository.PostRepository;
-import com.seneca.senecaforum.repository.TagRepository;
-import com.seneca.senecaforum.repository.TopicRepository;
-import com.seneca.senecaforum.repository.UserRepository;
-import com.seneca.senecaforum.service.PostService;
-import com.seneca.senecaforum.service.TagService;
-import com.seneca.senecaforum.service.TopicService;
-import com.seneca.senecaforum.service.UserService;
+import com.seneca.senecaforum.service.*;
 import com.seneca.senecaforum.service.dto.CommentDto;
 import com.seneca.senecaforum.service.dto.PostDetailDto;
+import com.seneca.senecaforum.service.dto.PostViewDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,18 +18,6 @@ import java.util.*;
 @CrossOrigin(origins = "*")
 public class PostController {
     @Autowired
-    private TopicRepository topicRepository;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private TagRepository tagRepository;
-
-    @Autowired
     private PostService postService;
 
     @Autowired
@@ -46,6 +28,9 @@ public class PostController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("/{postId}")
     public ResponseEntity<Post>getPostByPostID(@PathVariable("postId")  Integer postId){
@@ -103,4 +88,12 @@ public class PostController {
         }
         return new ResponseEntity(savedPost, HttpStatus.OK);
     }
+
+    @GetMapping("/hot")
+    public ResponseEntity<List<PostViewDto>>getHotPosts(){
+        List<PostViewDto> viewPosts = postService.getHotPosts();
+        viewPosts.forEach(p->p.setNoOfComments(commentService.getNoOfComments(p.getPostId())));
+        return ResponseEntity.ok(viewPosts);
+    }
+
 }
