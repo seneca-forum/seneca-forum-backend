@@ -1,6 +1,8 @@
 package com.seneca.senecaforum.service.dto;
 
+import com.seneca.senecaforum.domain.Comment;
 import com.seneca.senecaforum.domain.Topic;
+import com.seneca.senecaforum.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,13 +18,14 @@ import java.util.List;
 public class PostViewDto {
 
     private Integer postId;
-    private String title;
+    private String content;
     private Date createdOn;
+    private String tags;
+    private String title;
+    private Integer views;
     private UserDto author;
     private Topic topic;
     private CommentDto lastComment;
-    private String tags;
-    private Integer views;
     private Integer noOfComments;
-    private String content;
+
 }

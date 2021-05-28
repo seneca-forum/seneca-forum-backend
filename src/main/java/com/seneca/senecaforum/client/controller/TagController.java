@@ -20,7 +20,7 @@ public class TagController {
     private TagRepository tagRepository;
 
     @GetMapping
-    public ResponseEntity<Set<Tag>> getAllPostsByPostID(){
+    public ResponseEntity<Set<Tag>> getAllTags(){
         List<Tag> tags = tagRepository.findAll();
         Set<Tag>tagSet = new TreeSet<>();
         for(Tag t:tags){
