@@ -74,11 +74,11 @@ public class User {
         if(userId.getClass()==obj.getClass()){
             return true;
         }
-        Post post = (Post) obj;
-        if(this.userId==null&&post.getPostId()!=null){
+        User user = (User) obj;
+        if(this.userId==null&&user.getUserId()!=null){
             return false;
         }
-        else if(this.userId!=null && !this.userId.equals(post.getPostId())){
+        else if(this.userId!=null && !this.userId.equals(user.getUserId())){
             return false;
         }
         return true;

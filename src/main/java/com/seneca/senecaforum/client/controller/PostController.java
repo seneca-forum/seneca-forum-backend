@@ -92,7 +92,7 @@ public class PostController {
     @GetMapping("/hot")
     public ResponseEntity<List<PostViewDto>>getHotPosts(){
         List<PostViewDto> viewPosts = postService.getHotPosts();
-        viewPosts.forEach(p->p.setNoOfComments(commentService.getNoOfComments(p.getPostId())));
+        viewPosts.forEach(p->p.setNoOfComments(postService.getNoOfCommentsByPostId(p.getPostId())));
         return ResponseEntity.ok(viewPosts);
     }
 

@@ -6,13 +6,16 @@ import com.seneca.senecaforum.domain.User;
 import com.seneca.senecaforum.service.PostService;
 import com.seneca.senecaforum.utils.DatabaseUtils;
 import com.seneca.senecaforum.utils.NumberStringUtils;
+import org.hibernate.dialect.Database;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
+import javax.xml.crypto.Data;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -111,26 +114,6 @@ public class PostRepositoryTests {
         int after = postRepository.findAll().size();
         assertThat(before).isEqualTo(after-topicSize);
     }
-//    @Test
-//    public void testGetAllPostsFromTopicId(){
-//        Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
-//
-//        int topicId = randomPost.getTopic().getTopicId();
-//        Optional<Topic> topic = topicRepository.findById(1);
-//        Page<Post> posts = postRepository.findByTopicOrderByCommentsCreatedOnDesc(topic.get(),PageRequest.of(
-//                0,10)
-//        );
-//        String a = "b";
-//        posts.forEach(post -> System.out.println(post.getTopic()));
-//    }
-
-//    @Test
-//    public void testAPIGetAllPostsFromTopic(){
-//        Optional<Topic> topic = topicRepository.findById(1);
-//        List<PostDto> test = postService.getAllPostByTopic(topic.get(),,)
-//    }
-
-
     @Test
     public void testDeleteAPost(){
         Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
@@ -166,6 +149,18 @@ public class PostRepositoryTests {
         Topic topic = topicRepository.findById(4).get();
 //        List<Post> posts= postRepository.findByFilterDateAndTags(topic,null, ApplicationUtils.convertToDate("2021-05-06"),new Date());
         String a = "b";
+    }
+
+    @Test
+    public void testGetNoOfPostsByTopicId(){
+        Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());
+        int noOfPosts = postRepository.getNoOfPostsByTopicId(randomTopic.getTopicId());
+
+        //confirm
+        List<Post>posts = postRepository.findAll()
+                .stream().filter(p->p.getTopic().getTopicId() == randomTopic.getTopicId())
+                .collect(Collectors.toList());
+        assertThat(noOfPosts).isEqualTo(posts.size());
     }
 
 }

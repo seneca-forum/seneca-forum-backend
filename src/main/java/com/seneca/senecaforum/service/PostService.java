@@ -120,8 +120,19 @@ public class PostService {
         List<PostViewDto>viewPosts = null;
         List<Post>posts = postRepository.getHotPosts(PageRequest.of(0,10));
         viewPosts = MapperUtils.mapperList(posts,PostViewDto.class);
-
         return viewPosts;
+    }
+
+    public int getNoOfCommentsByPostId(int postId){
+        Optional<Post>post = postRepository.findById(postId);
+        if(post.isEmpty()){
+            return 0;
+        }
+        return post.get().getComments().size();
+    }
+
+    public int getNoOfPostsByTopicId(int topicId){
+        return postRepository.getNoOfPostsByTopicId(topicId);
     }
 
 }

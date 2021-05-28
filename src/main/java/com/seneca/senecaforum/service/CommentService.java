@@ -9,7 +9,8 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
-    public int getNoOfComments(int postId){
-        return commentRepository.getNoOfComments(postId);
+
+    public int getNoOfCommentsByTopicId(int topicId){
+        return commentRepository.getNoOfCommentsByTopicId(topicId);
     }
 }
