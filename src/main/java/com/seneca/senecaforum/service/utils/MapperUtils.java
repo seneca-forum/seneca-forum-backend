@@ -2,7 +2,6 @@ package com.seneca.senecaforum.service.utils;
 
 import org.modelmapper.ModelMapper;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 

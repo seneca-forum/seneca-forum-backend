@@ -16,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostViewDto {
-
     private Integer postId;
     private String content;
     private Date createdOn;

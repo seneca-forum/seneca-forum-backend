@@ -5,8 +5,10 @@ import com.seneca.senecaforum.domain.*;
 import com.seneca.senecaforum.service.*;
 import com.seneca.senecaforum.service.dto.CommentDto;
 import com.seneca.senecaforum.service.dto.PostDetailDto;
+import com.seneca.senecaforum.service.dto.PostSearchDto;
 import com.seneca.senecaforum.service.dto.PostViewDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -92,8 +94,15 @@ public class PostController {
     @GetMapping("/hot")
     public ResponseEntity<List<PostViewDto>>getHotPosts(){
         List<PostViewDto> viewPosts = postService.getHotPosts();
-        viewPosts.forEach(p->p.setNoOfComments(commentService.getNoOfComments(p.getPostId())));
+        viewPosts.forEach(p->p.setNoOfComments(postService.getNoOfCommentsByPostId(p.getPostId())));
         return ResponseEntity.ok(viewPosts);
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<PostSearchDto>>searchPostsByContent(@RequestParam(required = true) String content){
+        List<PostSearchDto>posts = postService.searchPostsByContent(content);
+        System.out.println(posts);
+        return ResponseEntity.ok(posts);
     }
 
 }

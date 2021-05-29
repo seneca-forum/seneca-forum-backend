@@ -6,13 +6,16 @@ import com.seneca.senecaforum.domain.User;
 import com.seneca.senecaforum.service.PostService;
 import com.seneca.senecaforum.utils.DatabaseUtils;
 import com.seneca.senecaforum.utils.NumberStringUtils;
+import org.hibernate.dialect.Database;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
+import javax.xml.crypto.Data;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -111,26 +114,6 @@ public class PostRepositoryTests {
         int after = postRepository.findAll().size();
         assertThat(before).isEqualTo(after-topicSize);
     }
-//    @Test
-//    public void testGetAllPostsFromTopicId(){
-//        Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
-//
-//        int topicId = randomPost.getTopic().getTopicId();
-//        Optional<Topic> topic = topicRepository.findById(1);
-//        Page<Post> posts = postRepository.findByTopicOrderByCommentsCreatedOnDesc(topic.get(),PageRequest.of(
-//                0,10)
-//        );
-//        String a = "b";
-//        posts.forEach(post -> System.out.println(post.getTopic()));
-//    }
-
-//    @Test
-//    public void testAPIGetAllPostsFromTopic(){
-//        Optional<Topic> topic = topicRepository.findById(1);
-//        List<PostDto> test = postService.getAllPostByTopic(topic.get(),,)
-//    }
-
-
     @Test
     public void testDeleteAPost(){
         Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
@@ -166,6 +149,31 @@ public class PostRepositoryTests {
         Topic topic = topicRepository.findById(4).get();
 //        List<Post> posts= postRepository.findByFilterDateAndTags(topic,null, ApplicationUtils.convertToDate("2021-05-06"),new Date());
         String a = "b";
+    }
+
+    @Test
+    public void testGetNoOfPostsByTopicId(){
+        Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());
+        int noOfPosts = postRepository.getNoOfPostsByTopicId(randomTopic.getTopicId());
+
+        //confirm
+        List<Post>posts = postRepository.findAll()
+                .stream().filter(p->p.getTopic().getTopicId() == randomTopic.getTopicId())
+                .collect(Collectors.toList());
+        assertThat(noOfPosts).isEqualTo(posts.size());
+    }
+
+    @Test
+    public void testGetABlock(){
+        String text = "<p>I'm absolutely furious.</p>" +
+                "<p>I worked for his small company for 6 weeks at the end of 2020 (it was landscape Design). He sacked me for being 'too slow' when I was off sick with covid (out of the blue). I have undiagnosed ADHD so I wasn't mad. But I was mad he sacked me via email. I just asked for more clarity and I made it clear I was taken aback. I was never rude to him.</p>" +
+                "<p>He got really mad and proceeded to write a long list of my (over exaggerated and some false) short comings e.g. too slow, distracted (stuff he never mentioned at the time). He then said 'if you want to take legal action against me let me know'. I didn't. I worked my hardest for him but he didn't want a graduate employee (he even told me he was looking for someone senior whilst I was there). Instead he made the sacking very personal JUST because I asked for clarity. Weird right?</p>";
+        String keyword = "furious";
+        int idxKw = text.indexOf(keyword);
+        System.out.print(idxKw);
+        String[] subStr = text.split("%furious%");
+        System.out.println(subStr[0]);
+
     }
 
 }

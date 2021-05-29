@@ -14,7 +14,7 @@ import javax.persistence.Id;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TopicStatDto {
+public class TopicStatsDto {
     private Integer topicId;
 
     private String topicName;
