@@ -47,17 +47,20 @@ public class PostRepositoryImpl implements CustomPostRepository {
         return q.getResultList();
     }
 
-//    @Override
-//    public List<PostViewDto> getHotPosts() {
-//        StringBuilder sql = new StringBuilder();
-//        sql.append("select * from posts left outer join\n" +
-//                "(select comments.post_id, count(*)as totalCmts from comments group by comments.post_id)\n" +
-//                "as tempC on posts.post_id = tempC.post_id\n" +
-//                "order by posts.views desc, tempC.totalCmts desc;\n");
-//        Query q = entityManager.createNativeQuery(sql.toString(),Post.class)
-//                .unwrap(org.hibernate.query.Query.class)
-//                .setResultTransformer(Transformers.aliasToBean(PostVie.class));
-//        return null;
-//    }
+    @Override
+    public List<Post> findPostsContainKeywords(String keyword) {
+        String[] tokens = keyword.split(" ");
+        String query = "select * from posts p where p.content like";
+        for(int i = 0; i < tokens.length; i++){
+            if(i!=0){
+                query+= " or ";
+            }
+            query+= " '%"+tokens[i].toString()+"%' ";
+        }
+        Query q = entityManager.createNativeQuery(query.toString(),Post.class);
+
+        return q.getResultList();
+    }
+
 
 }
