@@ -1,6 +1,6 @@
 package com.seneca.senecaforum.service.utils;
 
-import com.seneca.senecaforum.domain.Role;
+
 import com.seneca.senecaforum.domain.User;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;

@@ -8,8 +8,10 @@ import com.seneca.senecaforum.domain.User;
 import com.seneca.senecaforum.repository.PostRepository;
 import com.seneca.senecaforum.service.dto.CommentDto;
 import com.seneca.senecaforum.service.dto.PostDetailDto;
+import com.seneca.senecaforum.service.dto.PostSearchDto;
 import com.seneca.senecaforum.service.dto.PostViewDto;
 import com.seneca.senecaforum.service.utils.ApplicationUtils;
+import com.seneca.senecaforum.service.utils.ContentConverterUtils;
 import com.seneca.senecaforum.service.utils.MapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -135,4 +137,29 @@ public class PostService {
         return postRepository.getNoOfPostsByTopicId(topicId);
     }
 
+    public List<PostSearchDto> searchPostsByContent(String kw){
+        String keyword = kw.toLowerCase(Locale.ROOT);
+        List<Post>foundPosts = new ArrayList<>();
+        List<Post>posts = postRepository.findAll();
+        posts.forEach(p->{
+            String text = p.getContent().toLowerCase(Locale.ROOT);
+            String result = ContentConverterUtils.extractContentWithKeywords(text,keyword);
+            if(result!=null){
+                p.setContent(result);
+                foundPosts.add(p);
+            }
+        });
+        List<PostSearchDto> searchDtos = MapperUtils.mapperList(foundPosts,PostSearchDto.class);
+        searchDtos.forEach(p->{
+            if(keyword.split(" ").length==1){
+                List<Integer>idxs = ContentConverterUtils.getIdxsShortKeywords(p.getContent(),keyword);
+                p.setIdxKeywords(idxs);
+            }
+            else{
+                List<Integer>idxs = ContentConverterUtils.getIdxsLongKeywords(p.getContent(),keyword);
+                p.setIdxKeywords(idxs);
+            }
+        });
+        return searchDtos;
+    }
 }

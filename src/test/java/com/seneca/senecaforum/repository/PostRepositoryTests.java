@@ -163,5 +163,18 @@ public class PostRepositoryTests {
         assertThat(noOfPosts).isEqualTo(posts.size());
     }
 
+    @Test
+    public void testGetABlock(){
+        String text = "<p>I'm absolutely furious.</p>" +
+                "<p>I worked for his small company for 6 weeks at the end of 2020 (it was landscape Design). He sacked me for being 'too slow' when I was off sick with covid (out of the blue). I have undiagnosed ADHD so I wasn't mad. But I was mad he sacked me via email. I just asked for more clarity and I made it clear I was taken aback. I was never rude to him.</p>" +
+                "<p>He got really mad and proceeded to write a long list of my (over exaggerated and some false) short comings e.g. too slow, distracted (stuff he never mentioned at the time). He then said 'if you want to take legal action against me let me know'. I didn't. I worked my hardest for him but he didn't want a graduate employee (he even told me he was looking for someone senior whilst I was there). Instead he made the sacking very personal JUST because I asked for clarity. Weird right?</p>";
+        String keyword = "furious";
+        int idxKw = text.indexOf(keyword);
+        System.out.print(idxKw);
+        String[] subStr = text.split("%furious%");
+        System.out.println(subStr[0]);
+
+    }
+
 }
 

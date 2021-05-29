@@ -31,5 +31,4 @@ public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRe
             nativeQuery = true)
     int getNoOfPostsByTopicId (int topicId);
 
-
 }
