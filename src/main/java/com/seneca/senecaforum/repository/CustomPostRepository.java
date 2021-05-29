@@ -11,4 +11,5 @@ public interface CustomPostRepository {
 
     List<Post> findPostsByTopicBasedOnComment(Topic topic, String methodOrder, String tags, Pageable pageable);
 
+    List<Post> findPostsContainKeywords(String keyword);
 }

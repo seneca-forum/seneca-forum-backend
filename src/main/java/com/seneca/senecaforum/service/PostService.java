@@ -140,7 +140,7 @@ public class PostService {
     public List<PostSearchDto> searchPostsByContent(String kw){
         String keyword = kw.toLowerCase(Locale.ROOT);
         List<Post>foundPosts = new ArrayList<>();
-        List<Post>posts = postRepository.findAll();
+        List<Post>posts = postRepository.findPostsContainKeywords(keyword);
         posts.forEach(p->{
             String text = p.getContent().toLowerCase(Locale.ROOT);
             String result = ContentConverterUtils.extractContentWithKeywords(text,keyword);

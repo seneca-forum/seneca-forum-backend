@@ -1,6 +1,6 @@
 package com.seneca.senecaforum.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.seneca.senecaforum.service.utils.UserIdPrefixed;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
