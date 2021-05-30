@@ -57,7 +57,10 @@ public class PostService {
         List<PostViewDto> postPage = MapperUtils.mapperList(posts, PostViewDto.class);
         for (int i = 0; i < posts.size(); ++i) {
             int noOfComments = posts.get(i).getComments().size();
-            if (noOfComments == 0) continue;
+            if (noOfComments == 0){
+                postPage.get(i).setNoOfComments(noOfComments);
+                continue;
+            }
             if (Objects.isNull(methodOrder) || methodOrder.equals("desc")) {
                 postPage.get(i).setLastComment(
                         MapperUtils.mapperObject(posts.get(i).getComments().get(noOfComments - 1), CommentDto.class));
