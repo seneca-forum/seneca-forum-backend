@@ -86,6 +86,10 @@ public class PostService {
     }
 
     public Post createNewPost (PostDetailDto p, User user, Topic topic){
+        // trick to avoid storing null in database, for query purposes
+        if(p.getTags()==null){
+            p.setTags("");
+        }
         Post post = Post.builder()
                 .title(p.getTitle())
                 .content(p.getContent())
