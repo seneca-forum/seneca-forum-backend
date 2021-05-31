@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 @SpringBootTest
 public class RoleRepositoryTests {
     @Autowired
@@ -26,4 +28,12 @@ public class RoleRepositoryTests {
 
         roleRepository.saveAll(List.of(admin,user));
     }
+
+    @Test
+    public void testGetRoleByEmail(){
+        Role role = roleRepository.findRoleNameByEmail("trang@gmail.com");
+        assertThat(role.getRoleName()).isEqualTo("ROLE_USER");
+    }
+
+
 }

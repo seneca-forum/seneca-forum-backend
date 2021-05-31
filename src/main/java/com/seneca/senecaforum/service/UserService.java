@@ -3,8 +3,10 @@ package com.seneca.senecaforum.service;
 
 import com.seneca.senecaforum.domain.User;
 import com.seneca.senecaforum.repository.UserRepository;
+import com.seneca.senecaforum.security.jwt.JwtTokenProvider;
 import com.seneca.senecaforum.service.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -16,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtTokenProvider tokenProvider;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -52,7 +57,18 @@ public class UserService {
                 .username(usr.getUsername())
                 .build();
         return userRepository.save(savedUsr);
-
     }
 
+    public User updateIsRememberMe(User loginReq){
+        Optional<User>userDb = userRepository.findByEmail(loginReq.getEmail());
+        if(userDb.isPresent()&&userDb.get().getIsRememberMe()!=loginReq.getIsRememberMe()){
+            userDb.get().setIsRememberMe(loginReq.getIsRememberMe());
+            userRepository.save(userDb.get());
+        }
+        return userDb.get();
+    }
+
+    public String createNewToken(Authentication authentication, boolean rememberMe){
+        return tokenProvider.createToken(authentication, rememberMe);
+    }
 }
