@@ -2,10 +2,13 @@ package com.seneca.senecaforum.client.controller;
 
 import com.seneca.senecaforum.client.exception.BadRequestException;
 import com.seneca.senecaforum.client.exception.InternalException;
+import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Role;
 import com.seneca.senecaforum.domain.User;
+import com.seneca.senecaforum.service.PostService;
 import com.seneca.senecaforum.service.RoleService;
 import com.seneca.senecaforum.service.UserService;
+import com.seneca.senecaforum.service.dto.PostViewDto;
 import com.seneca.senecaforum.service.dto.UserDto;
 import com.seneca.senecaforum.service.utils.MapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +22,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
 public class UserController {
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @Autowired
     private UserService userService;
 
@@ -31,7 +40,7 @@ public class UserController {
     private RoleService roleService;
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    private PostService postService;
 
     @PostMapping("/new")
     public ResponseEntity<UserDto> createNewUser(@RequestBody User usr) {
@@ -79,5 +88,48 @@ public class UserController {
         UserDto userDto = MapperUtils.mapperObject(savedUsr,UserDto.class);
         return new ResponseEntity<>(userDto, httpHeaders, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/{userId}/posts")
+    public ResponseEntity<List<PostViewDto>> getAllPostsByUserId(@PathVariable("userId")  String userId) {
+        if(!userService.isUserIdValid(userId)){
+            throw new BadRequestException("Cannot find any users with userId "+userId);
+        }
+        List<Post>posts = postService.getAllPostsByUserId(userId);
+        List<PostViewDto>postDtos = MapperUtils.mapperList(posts,PostViewDto.class);
+        return ResponseEntity.ok(postDtos);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto> getUserByUserId(@PathVariable("userId")  String userId) {
+        UserDto usr = null;
+        try{
+            User user = userService.getUserByUserId(userId);
+            usr = MapperUtils.mapperObject(user,UserDto.class);
+        }
+        catch (Exception ex){
+            throw new InternalException("Cannot find any users with userId "+ userId);
+        }
+        return new ResponseEntity<>(usr, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{userId}/posts/{postId}")
+    public ResponseEntity getUserByUserId(
+            @PathVariable("userId")  String userId,
+            @PathVariable("postId")  int postId) {
+        UserDto usr = null;
+        if(!userService.isUserIdValid(userId)){
+            throw new BadRequestException("Cannot find any users with userId "+userId);
+        }
+        if(!postService.isPostIdValid(postId)){
+            throw new BadRequestException("Cannot find any post with postId "+postId);
+        }
+        try{
+            postService.deleteAPost(postId);
+        }
+        catch(Exception ex){
+            throw new InternalException("Cannot delete this post with postId "+postId+" !");
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

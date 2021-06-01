@@ -169,4 +169,21 @@ public class PostService {
         });
         return searchDtos;
     }
+
+    public List<Post>getAllPostsByUserId(String userId){
+        return postRepository.getAllPostsByUserId(userId);
+    }
+
+    public boolean isPostIdValid(int postId){
+        Optional<Post>post = postRepository.findById(postId);
+        if(post.isPresent()){
+            return true;
+        }
+        return false;
+    }
+
+    public void deleteAPost(int postId){
+        Post post = postRepository.findById(postId).get();
+        postRepository.delete(post);
+    }
 }
