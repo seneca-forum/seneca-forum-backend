@@ -163,6 +163,31 @@ public class PostRepositoryTests {
         assertThat(noOfPosts).isEqualTo(posts.size());
     }
 
+    @Test
+    public void testDeleteMultiplePosts(){
+        Set<Post>randoms = new HashSet<>();
+        while(randoms.size()<3){
+            Post post = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
+            randoms.add(post);
+        }
+        int startSz = postRepository.findAll().size();
+        for(Post rd: randoms){
+            postRepository.delete(rd);
+        }
+        int endSz = postRepository.findAll().size();
+        assertThat(endSz).isEqualTo(startSz-3);
+    }
 
+    @Test
+    public void testGetAllPostsByUserId(){
+        Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
+        User randomUser = randomPost.getAuthor();
+
+        List<Post>posts = postRepository.getAllPostsByUserId(randomUser.getUserId());
+
+        // confirm
+        List<Post>confirmPosts = postRepository.findAll().stream().filter(p->p.getAuthor().getUserId().equals(randomUser.getUserId())).collect(Collectors.toList());
+        assertThat(posts.size()).isEqualTo(confirmPosts.size());
+    }
 }
 

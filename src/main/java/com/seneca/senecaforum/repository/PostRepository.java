@@ -31,4 +31,7 @@ public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRe
             nativeQuery = true)
     int getNoOfPostsByTopicId (int topicId);
 
+    @Query("FROM Post p where p.author.userId =:userId")
+    List<Post>getAllPostsByUserId(String userId);
+
 }

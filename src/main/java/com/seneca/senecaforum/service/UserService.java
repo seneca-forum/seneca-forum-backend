@@ -71,4 +71,15 @@ public class UserService {
     public String createNewToken(Authentication authentication, boolean rememberMe){
         return tokenProvider.createToken(authentication, rememberMe);
     }
+
+    public boolean isUserIdValid(String userId){
+        Optional<User>user = userRepository.findById(userId);
+        if(user.isPresent()){
+            return true;
+        }
+        return false;
+    }
+    public User getUserByUserId(String userId){
+        return userRepository.findById(userId).get();
+    }
 }
