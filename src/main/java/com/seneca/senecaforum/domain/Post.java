@@ -68,6 +68,9 @@ public class Post{
     @Column(name = "views",nullable = false)
     private Integer views;
 
+    @Column()
+    private String status;
+
     public void addComment(Comment comment){
         if(this.comments == null){
             this.comments = new ArrayList<>();

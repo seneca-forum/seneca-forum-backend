@@ -26,5 +26,6 @@ public class PostViewDto {
     private Topic topic;
     private CommentDto lastComment;
     private Integer noOfComments;
+    private String status;
 
 }

@@ -34,4 +34,9 @@ public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRe
     @Query("FROM Post p where p.author.userId =:userId")
     List<Post>getAllPostsByUserId(String userId);
 
+    // get all posts and order by status = pending ->accepted->deleted on created_on asc order
+    @Query(value = "select * from posts order by if(status=\"pending\",0,if(status=\"accepted\",1,2)),created_on asc"
+    , nativeQuery = true)
+    List<Post>getAllPostsOrderByPending();
+
 }
