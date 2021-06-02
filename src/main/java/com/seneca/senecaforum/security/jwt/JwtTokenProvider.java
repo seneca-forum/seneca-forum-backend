@@ -49,7 +49,9 @@ public class JwtTokenProvider {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         String authorities = roleRepository.findRoleNameByEmail(user.getUsername()).getRoleName();
         String username = user.getUser().getUsername();
+        String userId = user.getUser().getUserId();
         return  Jwts.builder().setSubject(username)
+                .claim("userId",userId)
                 .claim(AUTHORITIES_KEY,authorities)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS512,JWT_SECRET)

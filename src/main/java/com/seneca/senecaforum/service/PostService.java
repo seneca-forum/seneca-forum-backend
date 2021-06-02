@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -185,5 +186,35 @@ public class PostService {
     public void deleteAPost(int postId){
         Post post = postRepository.findById(postId).get();
         postRepository.delete(post);
+    }
+
+    public List<Post> getAllPostsOrderByPending(){
+        return postRepository.getAllPostsOrderByPending();
+    }
+
+    public List<Post> getAllPostsOrderByCreatedOn(){
+        List<Post>posts = postRepository.findAll()
+                .stream()
+                .sorted((p1,p2)->p2.getCreatedOn().compareTo(p1.getCreatedOn()))
+                .collect(Collectors.toList());
+        return posts;
+    }
+
+    public void updatePostsStatus(List<Integer> postIds, String status) {
+        postIds.forEach(id->{
+            Optional<Post> p = postRepository.findById(id);
+            if(p.isPresent()){
+                p.get().setStatus(status);
+            }
+            postRepository.save(p.get());
+        });
+    }
+
+    public boolean hasPending() {
+        List<Post>posts = postRepository.findAll()
+                .stream()
+                .filter(post -> post.getStatus().equals("pending"))
+                .collect(Collectors.toList());
+        return posts.size()>0;
     }
 }

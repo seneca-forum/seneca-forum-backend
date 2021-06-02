@@ -189,5 +189,23 @@ public class PostRepositoryTests {
         List<Post>confirmPosts = postRepository.findAll().stream().filter(p->p.getAuthor().getUserId().equals(randomUser.getUserId())).collect(Collectors.toList());
         assertThat(posts.size()).isEqualTo(confirmPosts.size());
     }
+
+    @Test
+    public void testGetAllPostsOrderByStatus(){
+        List<Post>posts = postRepository.getAllPostsOrderByPending();
+        assertThat(posts.size()).isEqualTo(postRepository.findAll().size());
+    }
+
+    @Test
+    public void updatePostsStatus(){
+        List<Post>posts = postRepository.findAll();
+        for(Post p: posts){
+            p.setStatus("pending");
+        }
+       posts = postRepository.saveAll(posts);
+        // confirm
+        List<Post>confirmPosts = postRepository.findAll().stream().filter(p->p.getStatus().equals("pending")).collect(Collectors.toList());
+        assertThat(posts.size()).isEqualTo(confirmPosts.size());
+    }
 }
 

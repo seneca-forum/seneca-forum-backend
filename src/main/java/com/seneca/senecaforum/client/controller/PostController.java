@@ -7,6 +7,8 @@ import com.seneca.senecaforum.service.dto.CommentDto;
 import com.seneca.senecaforum.service.dto.PostDetailDto;
 import com.seneca.senecaforum.service.dto.PostSearchDto;
 import com.seneca.senecaforum.service.dto.PostViewDto;
+import com.seneca.senecaforum.service.utils.MapperUtils;
+import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -102,6 +104,39 @@ public class PostController {
         List<PostSearchDto>posts = postService.searchPostsByContent(content);
         System.out.println(posts);
         return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PostViewDto>>getAllPosts(){
+        boolean hasPending = postService.hasPending();
+        List<Post>posts = null;
+        if(hasPending){
+            posts = postService.getAllPostsOrderByPending();
+        }
+        else{
+            posts = postService.getAllPostsOrderByCreatedOn();
+        }
+
+        List<PostViewDto>postsDtos = MapperUtils.mapperList(posts,PostViewDto.class);
+        return ResponseEntity.ok(postsDtos);
+    }
+
+    @PutMapping("/status")
+    public ResponseEntity<List<PostViewDto>>updatePostsStatus(
+            @RequestParam(required = false) String status
+            ,@RequestBody List<Integer>postIds){
+        postService.updatePostsStatus(postIds, status);
+        boolean hasPending = postService.hasPending();
+        List<Post>posts = null;
+        if(hasPending){
+            posts = postService.getAllPostsOrderByPending();
+        }
+        else{
+            posts = postService.getAllPostsOrderByCreatedOn();
+        }
+
+        List<PostViewDto>postsDtos = MapperUtils.mapperList(posts,PostViewDto.class);
+        return ResponseEntity.ok(postsDtos);
     }
 
 }
