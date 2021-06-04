@@ -26,7 +26,7 @@ public class DatabaseUtils { ;
     }
 
 
-    public static <T> T generateRandomObjFromDb(JpaRepository<T,Integer> repo, Integer first){
+    public static <T> T generateRandomObjFromDb(JpaRepository<T, Integer> repo, Integer first){
         // please check first index in the database, using generics prohibit from getting the first index in entity
         int last = repo.findAll().size();
         T object = null;
@@ -53,8 +53,8 @@ public class DatabaseUtils { ;
         for(User u:users){
             userIds.add(u.getUserId());
         }
-//        Integer randomNumber = NumberStringUtils.generateRandomNumber(1,userIds.size());
-        return users.get(1);
+        Integer randomNumber = NumberStringUtils.generateRandomNumber(1,userIds.size());
+        return users.get(randomNumber);
     }
 
 

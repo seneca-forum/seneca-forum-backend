@@ -67,7 +67,7 @@ public class CommentRepositoryTests {
 
     @Test
     public void testGetNoOfCommentsByTopicId(){
-        Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());
+        Topic randomTopic = topicRepository.findAll().iterator().next();
         int noOfCmts = commentRepository.getNoOfCommentsByTopicId(randomTopic.getTopicId());
 
         //confirm

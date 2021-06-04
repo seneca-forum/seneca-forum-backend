@@ -141,7 +141,7 @@ public class PostService {
         return post.get().getComments().size();
     }
 
-    public int getNoOfPostsByTopicId(int topicId){
+    public int getNoOfPostsByTopicId(String topicId){
         return postRepository.getNoOfPostsByTopicId(topicId);
     }
 

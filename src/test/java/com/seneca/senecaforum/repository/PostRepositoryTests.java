@@ -36,7 +36,7 @@ public class PostRepositoryTests {
     public void addNewPostWithTags(){
         int before = postRepository.findAll().size();
         User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
-        Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());
+        Topic randomTopic = topicRepository.findAll().iterator().next();
         String title = NumberStringUtils.generateRandomString(15,false,true,true,true);
         String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
         String tags= "";
@@ -64,7 +64,7 @@ public class PostRepositoryTests {
     public void addNewPostWithNoTags(){
         int before = postRepository.findAll().size();
         User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
-        Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());
+        Topic randomTopic = topicRepository.findAll().iterator().next();
         String title = NumberStringUtils.generateRandomString(35,false,true,true,true);
         String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
 
@@ -88,7 +88,7 @@ public class PostRepositoryTests {
         int topicSize = topicRepository.findAll().size();
         for(int i = 1; i <= topicSize; i++){
             User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
-            Topic randomTopic = topicRepository.findById(i).get();
+            Topic randomTopic = topicRepository.findAll().iterator().next();
             String title = NumberStringUtils.generateRandomString(45,false,true,true,true);
             String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
 
@@ -146,14 +146,15 @@ public class PostRepositoryTests {
 
     @Test
     public void testCustomFilterPost() throws ParseException {
-        Topic topic = topicRepository.findById(4).get();
+        Topic randomTopic = topicRepository.findAll().iterator().next();
+        Topic topic = topicRepository.findById(randomTopic.getTopicName()).get();
 //        List<Post> posts= postRepository.findByFilterDateAndTags(topic,null, ApplicationUtils.convertToDate("2021-05-06"),new Date());
         String a = "b";
     }
 
     @Test
     public void testGetNoOfPostsByTopicId(){
-        Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());
+        Topic randomTopic = topicRepository.findAll().iterator().next();
         int noOfPosts = postRepository.getNoOfPostsByTopicId(randomTopic.getTopicId());
 
         //confirm

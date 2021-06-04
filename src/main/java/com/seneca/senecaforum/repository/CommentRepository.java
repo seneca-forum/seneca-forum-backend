@@ -17,5 +17,5 @@ public interface CommentRepository  extends JpaRepository<Comment,Integer>{
     @Query(value = "select count(*) from posts left outer join comments on comments.post_id = posts.post_id \n" +
             "where comments.comment_id is not null and posts.topic_id=:topicId",
             nativeQuery = true)
-    int getNoOfCommentsByTopicId (int topicId);
+    int getNoOfCommentsByTopicId (String topicId);
 }

@@ -1,13 +1,12 @@
 package com.seneca.senecaforum.service;
 
-import com.seneca.senecaforum.domain.Post;
+
 import com.seneca.senecaforum.domain.Topic;
 import com.seneca.senecaforum.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TopicService {
@@ -18,7 +17,7 @@ public class TopicService {
         return topicRepository.findAll();
     }
 
-    public Topic getTopicByTopicId(int topicId )
+    public Topic getTopicByTopicId(String topicId )
     {
         return topicRepository.findById(topicId).get();
     }
