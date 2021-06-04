@@ -10,7 +10,7 @@ public class CommentService {
     private CommentRepository commentRepository;
 
 
-    public int getNoOfCommentsByTopicId(int topicId){
+    public int getNoOfCommentsByTopicId(String topicId){
         return commentRepository.getNoOfCommentsByTopicId(topicId);
     }
 }

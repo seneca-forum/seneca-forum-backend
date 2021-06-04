@@ -1,6 +1,5 @@
 package com.seneca.senecaforum.repository;
 
-import com.seneca.senecaforum.domain.Role;
 import com.seneca.senecaforum.domain.User;
 import com.seneca.senecaforum.utils.DatabaseUtils;
 import com.seneca.senecaforum.utils.NumberStringUtils;

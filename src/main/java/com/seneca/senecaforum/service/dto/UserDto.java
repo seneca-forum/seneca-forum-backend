@@ -19,4 +19,6 @@ public class UserDto {
     private String username;
 
     private Date createdOn;
+
+    private Boolean isRememberMe;
 }

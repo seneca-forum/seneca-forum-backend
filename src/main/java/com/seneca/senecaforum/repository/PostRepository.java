@@ -14,9 +14,9 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRepository{
 
     @Query("FROM Post p WHERE p.topic = :topic " +
-            "AND (:startDate is null or p.createdOn >= :startDate) " +
-            "AND (:endDate is null or p.createdOn <= :endDate) " +
-            "AND (:tags is null or p.tags LIKE %:tags%)")
+            "AND (p.createdOn >= :startDate) " +
+            "AND (p.createdOn <= :endDate) " +
+            "AND (p.tags LIKE %:tags%)")
     List<Post> findPostsByTopicBasedOnPost(Topic topic, String tags, Date startDate, Date endDate, Pageable pageable);
 
 
@@ -29,7 +29,7 @@ public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRe
 
     @Query(value = "select count(*) from posts where topic_id =:topicId",
             nativeQuery = true)
-    int getNoOfPostsByTopicId (int topicId);
+    int getNoOfPostsByTopicId (String topicId);
 
     @Query("FROM Post p where p.author.userId =:userId")
     List<Post>getAllPostsByUserId(String userId);

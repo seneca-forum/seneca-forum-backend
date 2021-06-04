@@ -38,14 +38,14 @@ public class TopicController {
     }
 
     @GetMapping("/{topicId}/posts/size")
-    public ResponseEntity<Integer>getPostSizeFromTopicID(@PathVariable Integer topicId){
+    public ResponseEntity<Integer>getPostSizeFromTopicID(@PathVariable String topicId){
         int postSize = postService.getNoOfPostsByTopicId(topicId);
         return ResponseEntity.ok(postSize);
     }
 
     @GetMapping("/{topicId}/posts")//default:comment-desc
     public ResponseEntity<List<PostViewDto>> getAllPostByTopic(
-            @PathVariable Integer topicId,
+            @PathVariable String topicId,
             @RequestParam(required = false) String order,
             @RequestParam(required = false) String s,
             @RequestParam(required = false) String e,

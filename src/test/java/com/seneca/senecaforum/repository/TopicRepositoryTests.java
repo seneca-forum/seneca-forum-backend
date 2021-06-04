@@ -19,6 +19,14 @@ public class TopicRepositoryTests{
     TopicRepository topicRepository;
 
     @Test
+    public void testCreateOneTopic(){
+        String name = "Assignment Help";
+        Topic topic = Topic.builder().topicName(name).views(0).build();
+        topicRepository.save(topic);
+    }
+
+
+    @Test
     public void testCreateNewTopics(){
         int before = topicRepository.findAll().size();
         List<String> names = List.of(
@@ -46,7 +54,7 @@ public class TopicRepositoryTests{
 
     @Test
     public void testUpdateViewByTopicId(){
-        Topic randomTopic = DatabaseUtils.generateRandomObjFromDb(topicRepository,topicRepository.findAll().iterator().next().getTopicId());
+        Topic randomTopic = topicRepository.findAll().iterator().next();
 
         int views = NumberStringUtils.generateRandomNumber(1,100);
         randomTopic.setViews(views);

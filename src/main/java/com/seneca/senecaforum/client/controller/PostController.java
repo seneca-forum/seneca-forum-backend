@@ -8,7 +8,6 @@ import com.seneca.senecaforum.service.dto.PostDetailDto;
 import com.seneca.senecaforum.service.dto.PostSearchDto;
 import com.seneca.senecaforum.service.dto.PostViewDto;
 import com.seneca.senecaforum.service.utils.MapperUtils;
-import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
