@@ -15,6 +15,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -58,9 +60,6 @@ public class JwtFilter extends OncePerRequestFilter {
             log.error("failed on set user authentication", e);
         }
 
-
-
-
     }
 
     public String getJwtFromRequest(HttpServletRequest request){
@@ -71,5 +70,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
+
 
 }

@@ -30,6 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtTokenProvider tokenProvider;
 
 
+
     @Bean
     public BCryptPasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder();

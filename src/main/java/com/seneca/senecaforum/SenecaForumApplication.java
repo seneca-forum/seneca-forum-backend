@@ -28,6 +28,7 @@ public class SenecaForumApplication {
         };
     }
 
+
     @Bean //ModelMapper config
     public ModelMapper modelMapper(){
         ModelMapper modelMapper = new ModelMapper();
@@ -37,4 +38,6 @@ public class SenecaForumApplication {
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
         return modelMapper;
     }
+
+
 }

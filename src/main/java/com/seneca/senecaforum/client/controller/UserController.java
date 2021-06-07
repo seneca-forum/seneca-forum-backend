@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 @RestController
@@ -86,6 +87,7 @@ public class UserController {
         httpHeaders.add("Authorization", "Bearer " + jwt);
 
         UserDto userDto = MapperUtils.mapperObject(savedUsr,UserDto.class);
+
         return new ResponseEntity<>(userDto, httpHeaders, HttpStatus.OK);
 
     }
@@ -132,4 +134,5 @@ public class UserController {
         }
         return new ResponseEntity(HttpStatus.OK);
     }
+
 }
