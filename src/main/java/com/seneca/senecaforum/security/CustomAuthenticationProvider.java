@@ -12,14 +12,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class CustomAuthenticationProvider  {
     @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
@@ -35,7 +34,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
     }
 
-    @Override
     public boolean supports(Class<?> authentication) {
         return false;
     }
