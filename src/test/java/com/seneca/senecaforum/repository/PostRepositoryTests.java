@@ -2,17 +2,15 @@ package com.seneca.senecaforum.repository;
 
 import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Topic;
-import com.seneca.senecaforum.domain.User;
+import com.seneca.senecaforum.domain.UserEntity;
 import com.seneca.senecaforum.service.PostService;
 import com.seneca.senecaforum.utils.DatabaseUtils;
 import com.seneca.senecaforum.utils.NumberStringUtils;
-import org.hibernate.dialect.Database;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
-import javax.xml.crypto.Data;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,7 +33,7 @@ public class PostRepositoryTests {
     @Test
     public void addNewPostWithTags(){
         int before = postRepository.findAll().size();
-        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
+        UserEntity randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
         Topic randomTopic = topicRepository.findAll().iterator().next();
         String title = NumberStringUtils.generateRandomString(15,false,true,true,true);
         String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
@@ -63,7 +61,7 @@ public class PostRepositoryTests {
     @Test
     public void addNewPostWithNoTags(){
         int before = postRepository.findAll().size();
-        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
+        UserEntity randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
         Topic randomTopic = topicRepository.findAll().iterator().next();
         String title = NumberStringUtils.generateRandomString(35,false,true,true,true);
         String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
@@ -87,7 +85,7 @@ public class PostRepositoryTests {
         int before = postRepository.findAll().size();
         int topicSize = topicRepository.findAll().size();
         for(int i = 1; i <= topicSize; i++){
-            User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
+            UserEntity randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
             Topic randomTopic = topicRepository.findAll().iterator().next();
             String title = NumberStringUtils.generateRandomString(45,false,true,true,true);
             String content = NumberStringUtils.generateRandomString(25,false,true,true,true);
@@ -182,12 +180,12 @@ public class PostRepositoryTests {
     @Test
     public void testGetAllPostsByUserId(){
         Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
-        User randomUser = randomPost.getAuthor();
+        UserEntity randomUserEntity = randomPost.getAuthor();
 
-        List<Post>posts = postRepository.getAllPostsByUserId(randomUser.getUserId());
+        List<Post>posts = postRepository.getAllPostsByUserId(randomUserEntity.getUserId());
 
         // confirm
-        List<Post>confirmPosts = postRepository.findAll().stream().filter(p->p.getAuthor().getUserId().equals(randomUser.getUserId())).collect(Collectors.toList());
+        List<Post>confirmPosts = postRepository.findAll().stream().filter(p->p.getAuthor().getUserId().equals(randomUserEntity.getUserId())).collect(Collectors.toList());
         assertThat(posts.size()).isEqualTo(confirmPosts.size());
     }
 

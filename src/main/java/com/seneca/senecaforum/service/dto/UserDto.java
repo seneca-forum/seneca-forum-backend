@@ -20,5 +20,4 @@ public class UserDto {
 
     private Date createdOn;
 
-    private Boolean isRememberMe;
 }

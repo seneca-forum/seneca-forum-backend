@@ -3,7 +3,7 @@ package com.seneca.senecaforum.repository;
 import com.seneca.senecaforum.domain.Comment;
 import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Topic;
-import com.seneca.senecaforum.domain.User;
+import com.seneca.senecaforum.domain.UserEntity;
 import com.seneca.senecaforum.utils.DatabaseUtils;
 import com.seneca.senecaforum.utils.NumberStringUtils;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +36,7 @@ public class CommentRepositoryTests {
 
     @Test
     public void testCreateNewComments(){
-        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
+        UserEntity randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
         Post randomPost = DatabaseUtils.generateRandomObjFromDb(postRepository,postRepository.findAll().iterator().next().getPostId());
 
         String content = NumberStringUtils.generateRandomString(15,false,true,true,true);

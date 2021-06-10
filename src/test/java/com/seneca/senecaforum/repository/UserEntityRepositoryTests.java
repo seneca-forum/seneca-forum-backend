@@ -1,6 +1,6 @@
 package com.seneca.senecaforum.repository;
 
-import com.seneca.senecaforum.domain.User;
+import com.seneca.senecaforum.domain.UserEntity;
 import com.seneca.senecaforum.utils.DatabaseUtils;
 import com.seneca.senecaforum.utils.NumberStringUtils;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class UserRepositoryTests {
+public class UserEntityRepositoryTests {
     @Autowired
     private UserRepository userRepository;
 
@@ -26,15 +26,14 @@ public class UserRepositoryTests {
         String email = NumberStringUtils.generateRandomString(5,false,false,true,false)+"@gmail.com";
         String username = NumberStringUtils.generateRandomString(8,false,false,true,false);
         String password = NumberStringUtils.generateRandomString(12,true,true,true,false);
-        User user = new User().builder()
+        UserEntity userEntity = UserEntity.builder()
                 .email(email)
                 .username(username)
                 .password(password)
                 .createdOn(new Date())
                 .role(roleRepository.findByRoleName("ROLE_USER"))
-                .isRememberMe(false)
                 .build();
-        userRepository.save(user);
+        userRepository.save(userEntity);
         int after = userRepository.findAll().size();
         assertThat(before).isEqualTo(after-1);
     }
@@ -42,9 +41,9 @@ public class UserRepositoryTests {
 
     @Test
     public void testDeleteAUser(){
-        User randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
+        UserEntity randomUsr = DatabaseUtils.generateRandomObjFromUserDb(userRepository);
         userRepository.delete(randomUsr);
-        Optional<User> deletedUsr = userRepository.findById(randomUsr.getUserId());
+        Optional<UserEntity> deletedUsr = userRepository.findById(randomUsr.getUserId());
         assertThat(deletedUsr).isEmpty();
     }
 

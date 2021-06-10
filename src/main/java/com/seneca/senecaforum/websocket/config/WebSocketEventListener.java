@@ -14,7 +14,6 @@ import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,7 +43,7 @@ public class WebSocketEventListener {
         String login = nativeHeaders.get("username").get(0);
         String sessionId = stompAccessor.getSessionId();
         System.out.println("Chat connection by user "+login+" with sessionId " +sessionId);
-        ChatMessage chatMessage = new ChatMessage()
+        ChatMessage chatMessage = ChatMessage
                 .builder().message(sessionId)
                 .messageType(MessageType.JOIN)
                 .fromLogin(login)
@@ -62,7 +61,7 @@ public class WebSocketEventListener {
         StompHeaderAccessor stompAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = stompAccessor.getSessionId();
         System.out.println("Chat disconnection with sessionId " +sessionId+" login ");
-        ChatMessage chatMessage = new ChatMessage().builder().messageType(MessageType.LEAVE).message(sessionId).build();
+        ChatMessage chatMessage = ChatMessage.builder().messageType(MessageType.LEAVE).message(sessionId).build();
         Map<String, String>offlineUsr = this.onlineUsrs
                 .stream()
                 .filter((a)->a.containsValue(sessionId))

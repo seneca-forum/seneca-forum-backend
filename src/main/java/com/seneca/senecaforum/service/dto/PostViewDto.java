@@ -1,15 +1,12 @@
 package com.seneca.senecaforum.service.dto;
 
-import com.seneca.senecaforum.domain.Comment;
 import com.seneca.senecaforum.domain.Topic;
-import com.seneca.senecaforum.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Builder
