@@ -11,7 +11,6 @@ import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -19,7 +18,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserEntity {
     @Id
     @Column(name = "user_id",updatable = false,nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "user_gen")
@@ -43,9 +42,6 @@ public class User {
 
     @Column(name = "password",length = 68,nullable = false)
     private String password;
-
-    @Column(name="is_remember_me")
-    private Boolean isRememberMe;
 
     @Column(name="created_on",nullable = false)
     @Temporal(TemporalType.DATE)
@@ -74,11 +70,11 @@ public class User {
         if(userId.getClass()==obj.getClass()){
             return true;
         }
-        User user = (User) obj;
-        if(this.userId==null&&user.getUserId()!=null){
+        UserEntity userEntity = (UserEntity) obj;
+        if(this.userId==null&& userEntity.getUserId()!=null){
             return false;
         }
-        else if(this.userId!=null && !this.userId.equals(user.getUserId())){
+        else if(this.userId!=null && !this.userId.equals(userEntity.getUserId())){
             return false;
         }
         return true;

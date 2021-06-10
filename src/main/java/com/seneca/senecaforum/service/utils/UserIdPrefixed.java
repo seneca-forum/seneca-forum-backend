@@ -1,7 +1,7 @@
 package com.seneca.senecaforum.service.utils;
 
 
-import com.seneca.senecaforum.domain.User;
+import com.seneca.senecaforum.domain.UserEntity;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -28,7 +28,7 @@ public class UserIdPrefixed extends SequenceStyleGenerator {
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return String.format(format,((User)object).getRole().getCode(),super.generate(session,object));
+        return String.format(format,((UserEntity)object).getRole().getCode(),super.generate(session,object));
     }
 
     @Override

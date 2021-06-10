@@ -4,7 +4,7 @@ import com.seneca.senecaforum.client.exception.BadRequestException;
 import com.seneca.senecaforum.domain.Comment;
 import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Topic;
-import com.seneca.senecaforum.domain.User;
+import com.seneca.senecaforum.domain.UserEntity;
 import com.seneca.senecaforum.repository.PostRepository;
 import com.seneca.senecaforum.service.dto.CommentDto;
 import com.seneca.senecaforum.service.dto.PostDetailDto;
@@ -86,7 +86,7 @@ public class PostService {
         return post;
     }
 
-    public Post createNewPost (PostDetailDto p, User user, Topic topic){
+    public Post createNewPost (PostDetailDto p, UserEntity userEntity, Topic topic){
         // trick to avoid storing null in database, for query purposes
         if(p.getTags()==null){
             p.setTags("");
@@ -95,7 +95,7 @@ public class PostService {
                 .title(p.getTitle())
                 .content(p.getContent())
                 .createdOn(new Date())
-                .author(user)
+                .author(userEntity)
                 .topic(topic)
                 .tags(p.getTags())
                 .views(0)
@@ -104,9 +104,9 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Post createNewComment (Post post, User user, CommentDto c){
+    public Post createNewComment (Post post, UserEntity userEntity, CommentDto c){
         Comment newComment = Comment.builder()
-                .commenter(user)
+                .commenter(userEntity)
                 .content(c.getContent())
                 .createdOn(new Date())
                 .enabled(c.getEnabled())

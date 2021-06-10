@@ -5,7 +5,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/seneca_forum
     username: root
-    password: abc123456
+    password: 123456
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -19,6 +19,7 @@ spring:
         format_sql: true
         #to fix the bug 'Failed to lazily initialize a collection of role could not initialize proxy – no Session'
         enable_lazy_load_no_trans: true
+secretKey: fPJZz!YkEmUhdmvvhw7y*6K*0$7vco!pfiOtq6N&cgnLNT$I4u
 #  servlet:
 #    multipart:
 #      enabled: true
@@ -26,6 +27,5 @@ spring:
 #      max-request-size: 128MB
 #  resources:
 #    static-locations: classpath:/videos/
-#secretKey: MjlhMTU0MzFiNmUxYzY0MDlkMGYwM2ZhMTE5NGYyNWI1YTIxOTgxMjE5MGYyYzU1NGU2OGM4ZjgxNjRlOWIwN2IxODYxYWY2OGFjNmQ0ZDk2YjY2MDdmYmYzMWZkMGUzNjQzOWU1M2YxODQ2NmM0MTIzNGIwZDE3NWVlZWIzYTk=
 
 

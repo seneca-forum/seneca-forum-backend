@@ -1,6 +1,5 @@
 package com.seneca.senecaforum.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +33,7 @@ public class Comment {
             referencedColumnName = "user_id",
             foreignKey = @ForeignKey(name = "FK_COMMENTER_COMMENT")
     )
-    private User commenter;
+    private UserEntity commenter;
 
     @Column(nullable = false)
     private Boolean enabled;

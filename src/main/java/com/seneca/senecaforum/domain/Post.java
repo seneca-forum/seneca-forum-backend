@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,7 +45,7 @@ public class Post{
             referencedColumnName="user_id",
             foreignKey=@ForeignKey(name = "FK_AUTHOR_POST")
     )
-    private User author;
+    private UserEntity author;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(

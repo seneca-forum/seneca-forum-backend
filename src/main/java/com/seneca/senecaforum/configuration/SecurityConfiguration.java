@@ -1,7 +1,8 @@
-package com.seneca.senecaforum.security;
+package com.seneca.senecaforum.configuration;
 
-import com.seneca.senecaforum.security.jwt.JwtFilter;
-import com.seneca.senecaforum.security.jwt.JwtTokenProvider;
+import com.seneca.senecaforum.service.DomainUserDetailsService;
+import com.seneca.senecaforum.security.jwt.JwtConfigurer;
+import com.seneca.senecaforum.security.jwt.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -11,25 +12,20 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true,securedEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    @Qualifier("customUserDetailsService")
-    CustomUserDetailsService customUserDetailsService;
+    @Qualifier("userDetailsService")
+    DomainUserDetailsService domainUserDetailsService;
 
     @Autowired
-    private JwtFilter jwtFilter;
-
-    @Autowired
-    private JwtTokenProvider tokenProvider;
-
-
+    private TokenProvider tokenProvider;
 
     @Bean
     public BCryptPasswordEncoder getPasswordEncoder(){
@@ -38,7 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customUserDetailsService).passwordEncoder(getPasswordEncoder());
+        auth.userDetailsService(domainUserDetailsService).passwordEncoder(getPasswordEncoder());
     }
 
     @Bean
@@ -49,10 +45,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        http.csrf().disable().authorizeRequests()
+                .antMatchers("/api/auth").permitAll()
+                .antMatchers("/admin").hasRole("ADMIN")
+                .and().exceptionHandling()
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().apply(securityConfigureAdapter());
 
-        http.antMatcher("/api/users/login")
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    private JwtConfigurer securityConfigureAdapter(){
+        return new JwtConfigurer(tokenProvider);
     }
 
 }

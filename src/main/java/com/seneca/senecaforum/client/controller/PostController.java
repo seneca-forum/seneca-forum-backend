@@ -42,11 +42,11 @@ public class PostController {
 
     @PostMapping()
     public ResponseEntity<Post>createNewPost(@RequestBody PostDetailDto p){
-        User user = userService.getUserByUsername(p.getAuthor().getUsername());
+        UserEntity userEntity = userService.getUserByUsername(p.getAuthor().getUsername());
 
         Topic topic = topicService.getTopicByTopicId(p.getTopic().getTopicId());
 
-        Post post = postService.createNewPost(p, user, topic);
+        Post post = postService.createNewPost(p, userEntity, topic);
 
         // store the tags
         if(p.getTags()!=null && p.getTags() != ""){
@@ -65,10 +65,10 @@ public class PostController {
             @PathVariable("postId")  Integer postId,
             @RequestBody CommentDto c){
         Post post = postService.getPostByPostId(postId);
-        User user = userService.getUserByUsername(c.getCommenter().getUsername());
+        UserEntity userEntity = userService.getUserByUsername(c.getCommenter().getUsername());
         Post savedPost = null;
         try{
-            savedPost = postService.createNewComment(post, user, c);
+            savedPost = postService.createNewComment(post, userEntity, c);
         }
         catch(Exception ex){
             throw new InternalException("Cannot save a new comment");
