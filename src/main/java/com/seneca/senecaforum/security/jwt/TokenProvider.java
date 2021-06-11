@@ -1,5 +1,6 @@
 package com.seneca.senecaforum.security.jwt;
 
+import com.seneca.senecaforum.domain.UserEntity;
 import com.seneca.senecaforum.repository.RoleRepository;
 import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.UserService;
@@ -69,9 +70,10 @@ public class TokenProvider {
         else{
             validity = new Date(System.currentTimeMillis()+JWT_EXPIRATION_WITHOUT_REMEMBER);
         }
-        return  Jwts.builder().setSubject(authentication.getName())
+        return  Jwts.builder()
+                .claim("username",userService.getUserByEmail(authentication.getName()).getUsername())
                 .claim("userId",userService.getUserByEmail(authentication.getName()).getUserId())
-                .claim(AUTHORITIES_KEY,authentication.getAuthorities())
+                .claim(AUTHORITIES_KEY,authentication.getAuthorities().stream().collect(Collectors.toList()).get(0).getAuthority())
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS512,JWT_SECRET)
                 .compact();
