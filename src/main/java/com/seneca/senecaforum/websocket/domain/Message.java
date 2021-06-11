@@ -41,5 +41,6 @@ public class Message {
     @Column(name = "created_on",nullable = false)
     private Date createdOn;
 
+    @Column(name="status")
     private String status;
 }

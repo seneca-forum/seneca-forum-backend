@@ -1,6 +1,7 @@
 package com.seneca.senecaforum.websocket.controller;
 
 
+import com.seneca.senecaforum.client.exception.InternalException;
 import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.utils.MapperUtils;
 import com.seneca.senecaforum.websocket.config.WebSocketEventListener;
@@ -10,7 +11,6 @@ import com.seneca.senecaforum.websocket.repository.ChatroomRepository;
 import com.seneca.senecaforum.websocket.repository.MessageRepository;
 import com.seneca.senecaforum.websocket.service.dto.NotificationDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -61,14 +61,27 @@ public class ChatController {
                     .senderId(chatMessage.getRecipientId())
                     .recipientId(chatMessage.getSenderId())
                     .build();
-            chatroomRepository.save(senderRecipient);
-            chatroomRepository.save(recipientSender);
+            try{
+                chatroomRepository.save(senderRecipient);
+                chatroomRepository.save(recipientSender);
+            }
+            catch(Exception ex){
+                ex.printStackTrace();
+                throw new InternalException("Cannont create new chat room between sender "+chatMessage.getSenderId()+" and recipient "+chatMessage.getRecipientId());
+            }
+
         }
         else{
             chatroomId = chatroom.get().getChatroomId();
         }
         chatMessage.setChatroomId(chatroomId);
-        Message saved = messageRepository.save(chatMessage);
+        Message saved = null;
+        try{
+            saved = messageRepository.save(chatMessage);
+        }
+        catch(Exception ex){
+            throw new InternalException("Cannot create new message in chatroomId "+ chatroomId);
+        }
 
         NotificationDto noti = MapperUtils.mapperObject(saved, NotificationDto.class);
 
