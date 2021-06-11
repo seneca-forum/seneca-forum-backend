@@ -1,9 +1,8 @@
 package com.seneca.senecaforum.websocket.config;
 
-import com.seneca.senecaforum.domain.User;
+import com.seneca.senecaforum.domain.UserEntity;
 import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.utils.MapperUtils;
-import com.seneca.senecaforum.websocket.domain.Message;
 import com.seneca.senecaforum.websocket.service.dto.OnlineUserDto;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -51,7 +50,7 @@ public class WebSocketEventListener {
         if(this.onlineUsrs==null){
             this.onlineUsrs = new HashSet<>();
         }
-        User usr = userRepository.findByUsername(login).get();
+        UserEntity usr = userRepository.findByUsername(login).get();
         OnlineUserDto onl = MapperUtils.mapperObject(usr, OnlineUserDto.class);
         onl.setSessionId(sessionId);
         this.onlineUsrs.add(onl);
