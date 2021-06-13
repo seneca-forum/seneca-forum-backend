@@ -14,6 +14,7 @@ public class OnlineUserDto {
     private String sessionId;
     private String username;
     private Integer noOfNewMessages;
+    private String status;
 
     @Override
     public int hashCode() {
