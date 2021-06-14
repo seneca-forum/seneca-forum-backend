@@ -134,24 +134,14 @@ public class PostController {
     }
 
     @PutMapping("/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void>updatePostsStatus(
             @RequestParam(required = false) String status
             ,@RequestBody List<Integer>postIds) throws URISyntaxException {
         postService.updatePostsStatus(postIds, status);
-//        boolean hasPending = postService.hasPending();
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(new URI(ApplicationConstants.BASE_URL+"/posts/"+"status?"+status));
+        headers.setLocation(new URI(ApplicationConstants.BASE_URL+"/posts?"+"status="+status));
         return ResponseEntity.noContent().headers(headers).build();
-//        List<Post>posts = null;
-//        if(hasPending){
-//            posts = postService.getAllPostsOrderByPending();
-//        }
-//        else{
-//            posts = postService.getAllPostsOrderByCreatedOn();
-//        }
-//
-//        List<PostViewDto>postsDtos = MapperUtils.mapperList(posts,PostViewDto.class);
-//        return ResponseEntity.ok(postsDtos);
     }
 
 }

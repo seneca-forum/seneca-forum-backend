@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,4 +72,6 @@ public class UserService {
     public UserEntity getUserByUserId(String userId){
         return userRepository.findById(userId).get();
     }
+
+    public List<UserEntity>getAllUsers(){return userRepository.findAll();};
 }

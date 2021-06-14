@@ -6,8 +6,6 @@ import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.utils.MapperUtils;
 import com.seneca.senecaforum.websocket.service.dto.OnlineUserDto;
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -24,9 +22,7 @@ import java.util.stream.Collectors;
 @Component
 @Data
 public class WebSocketEventListener {
-    private Set<OnlineUserDto> onlineUsrs = new HashSet<>();
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
-
+    private Set<OnlineUserDto> onlineUsrs;
 
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
@@ -40,7 +36,7 @@ public class WebSocketEventListener {
         StompHeaderAccessor stompAccessor = StompHeaderAccessor.wrap(event.getMessage());
         @SuppressWarnings("rawtypes")
         GenericMessage connectHeader = (GenericMessage) stompAccessor
-                .getHeader(SimpMessageHeaderAccessor.CONNECT_MESSAGE_HEADER); // FIXME find a way to pass the username
+                .getHeader(SimpMessageHeaderAccessor.CONNECT_MESSAGE_HEADER);
         // to the server
         @SuppressWarnings("unchecked")
         Map<String, List<String>> nativeHeaders = (Map<String, List<String>>) connectHeader.getHeaders()
@@ -51,10 +47,12 @@ public class WebSocketEventListener {
         if(this.onlineUsrs==null){
             this.onlineUsrs = new HashSet<>();
         }
-        UserEntity usr = userRepository.findByUsername(login).get();
-        OnlineUserDto onl = MapperUtils.mapperObject(usr, OnlineUserDto.class);
-        onl.setSessionId(sessionId);
-        this.onlineUsrs.add(onl);
+        Optional<UserEntity> usr = userRepository.findByUsername(login);
+        if(usr.isPresent()){
+            OnlineUserDto onl = MapperUtils.mapperObject(usr.get(), OnlineUserDto.class);
+            onl.setSessionId(sessionId);
+            this.onlineUsrs.add(onl);
+        }
     }
 
     @EventListener
