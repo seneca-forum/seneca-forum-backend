@@ -8,27 +8,19 @@ import com.seneca.senecaforum.domain.UserEntity;
 import com.seneca.senecaforum.service.PostService;
 import com.seneca.senecaforum.service.RoleService;
 import com.seneca.senecaforum.service.UserService;
-import com.seneca.senecaforum.service.dto.LoginRequest;
 import com.seneca.senecaforum.service.dto.PostViewDto;
 import com.seneca.senecaforum.service.dto.UserDto;
 import com.seneca.senecaforum.service.utils.MapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*")
 public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;

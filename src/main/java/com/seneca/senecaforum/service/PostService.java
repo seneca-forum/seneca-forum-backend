@@ -75,15 +75,15 @@ public class PostService {
 
     }
 
-    public Post getPostByPostId(Integer postId){
-        Post post = null;
-        try {
-            post = postRepository.findById(postId).get();
-        } catch (Exception ex) {
-            throw new BadRequestException("Found nothing with postId " + postId);
-        }
-        Collections.sort(post.getComments(), (c1, c2) -> c2.getCreatedOn().compareTo(c1.getCreatedOn()));
-        return post;
+    public Optional<Post> getPostByPostId(Integer postId){
+        Optional<Post> postFind = postRepository.findById(postId);
+        postFind.ifPresent(
+                post -> {
+                    post.setViews(post.getViews()+1);
+                    postRepository.save(post);
+                    post.getComments().sort((c1, c2) -> c2.getCreatedOn().compareTo(c1.getCreatedOn()));
+                });
+        return postFind;
     }
 
     public Post createNewPost (PostDetailDto p, UserEntity userEntity, Topic topic){
@@ -104,41 +104,47 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Post createNewComment (Post post, UserEntity userEntity, CommentDto c){
-        Comment newComment = Comment.builder()
-                .commenter(userEntity)
-                .content(c.getContent())
-                .createdOn(new Date())
-                .enabled(c.getEnabled())
-                .build();
-        post.addComment(newComment);
-        Post savedPost = postRepository.save(post);
-        Collections.sort(savedPost.getComments(), (c1, c2) -> c2.getCreatedOn().compareTo(c1.getCreatedOn()));
-        return post;
+    public Optional<Post> createNewComment (Post post, UserEntity userEntity, CommentDto c){
+        Optional<Post> postFind = postRepository.findById(post.getPostId());
+        if (postFind.isPresent()){
+            Comment newComment = Comment.builder()
+                    .commenter(userEntity)
+                    .content(c.getContent())
+                    .createdOn(new Date())
+                    .enabled(c.getEnabled())
+                    .build();
+            post.addComment(newComment);
+            Post savedPost = postRepository.save(post);
+            savedPost.getComments().sort((c1, c2) -> c2.getCreatedOn().compareTo(c1.getCreatedOn()));
+            return Optional.of(savedPost);
+        }
+        return Optional.empty();
     }
 
-    public Post editAPost (PostDetailDto p){
-        Post savedPost = postRepository.findById(p.getPostId()).get();
-        savedPost.setContent(p.getContent());
-        savedPost.setTags(p.getTags());
-        savedPost.setTitle(p.getTitle());
-        savedPost.setTopic(p.getTopic());
-        return postRepository.save(savedPost);
+    public Optional<Post> editAPost (PostDetailDto p){
+        Optional<Post> postFind = postRepository.findById(p.getPostId());
+        Post post;
+        if (postFind.isPresent()){
+            post = postFind.get();
+            post.setContent(p.getContent());
+            post.setTags(p.getTags());
+            post.setTitle(p.getTitle());
+            post.setTopic(p.getTopic());
+            return Optional.of(postRepository.save(post));
+        }
+        return Optional.empty();
     }
 
-    public List<PostViewDto>getHotPosts(){
-        List<PostViewDto>viewPosts = null;
-        List<Post>posts = postRepository.getHotPosts(PageRequest.of(0,10));
-        viewPosts = MapperUtils.mapperList(posts,PostViewDto.class);
+    public List<PostViewDto>getHotPosts(int page){
+        List<Post>posts = postRepository.getHotPosts(PageRequest.of(page-1,10));
+        List<PostViewDto>viewPosts = MapperUtils.mapperList(posts,PostViewDto.class);
+        viewPosts.forEach(p->p.setNoOfComments(getNoOfCommentsByPostId(p.getPostId())));
         return viewPosts;
     }
 
     public int getNoOfCommentsByPostId(int postId){
         Optional<Post>post = postRepository.findById(postId);
-        if(post.isEmpty()){
-            return 0;
-        }
-        return post.get().getComments().size();
+        return post.isEmpty() ? 0 : post.get().getComments().size();
     }
 
     public int getNoOfPostsByTopicId(String topicId){
@@ -188,33 +194,28 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public List<Post> getAllPostsOrderByPending(){
-        return postRepository.getAllPostsOrderByPending();
+    public List<PostViewDto> getAllPostsOrderByPending(){
+        List<Post> posts = postRepository.getAllPostsOrderByPending();
+        return MapperUtils.mapperList(posts,PostViewDto.class);
     }
 
-    public List<Post> getAllPostsOrderByCreatedOn(){
-        List<Post>posts = postRepository.findAll()
-                .stream()
-                .sorted((p1,p2)->p2.getCreatedOn().compareTo(p1.getCreatedOn()))
-                .collect(Collectors.toList());
-        return posts;
+    public List<PostViewDto> getAllPostsOrderByCreatedOn(){
+        List<Post> posts = postRepository.findPostsByOrderByCreatedOnDesc();
+        return MapperUtils.mapperList(posts,PostViewDto.class);
     }
 
     public void updatePostsStatus(List<Integer> postIds, String status) {
         postIds.forEach(id->{
             Optional<Post> p = postRepository.findById(id);
-            if(p.isPresent()){
-                p.get().setStatus(status);
-            }
-            postRepository.save(p.get());
+            p.ifPresent(
+                    post -> {
+                        post.setStatus(status);
+                        postRepository.save(p.get());
+                    });
         });
     }
 
     public boolean hasPending() {
-        List<Post>posts = postRepository.findAll()
-                .stream()
-                .filter(post -> post.getStatus().equals("pending"))
-                .collect(Collectors.toList());
-        return posts.size()>0;
+        return postRepository.countByStatusEquals("pending") > 0;
     }
 }

@@ -67,7 +67,7 @@ public class Post{
     @Column(name = "views",nullable = false)
     private Integer views;
 
-    @Column()
+    @Column(name = "status")
     private String status;
 
     public void addComment(Comment comment){

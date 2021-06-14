@@ -1,8 +1,10 @@
 package com.seneca.senecaforum.security.jwt;
 
+import com.seneca.senecaforum.domain.UserEntity;
 import com.seneca.senecaforum.repository.RoleRepository;
 import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.UserService;
+import com.seneca.senecaforum.service.dto.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -32,17 +34,19 @@ public class TokenProvider {
 
 
     @Value("${secretKey}")
-    public String JWT_SECRET;
+    private String JWT_SECRET;
 
     public static final int JWT_EXPIRATION_REMEMBER = 1209600000; //14 days
     public static final int JWT_EXPIRATION_WITHOUT_REMEMBER = 300000; //5 mins
     private static final String AUTHORITIES_KEY = "role";
+    private static final String USERNAME = "username";
+    private static final String USER_ID = "userId";
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractAllClaims(token).get(USERNAME).toString();
     }
 
     public <T> T extractClaim(String token, Function<Claims,T>claimsResolver){
@@ -69,9 +73,13 @@ public class TokenProvider {
         else{
             validity = new Date(System.currentTimeMillis()+JWT_EXPIRATION_WITHOUT_REMEMBER);
         }
-        return  Jwts.builder().setSubject(authentication.getName())
-                .claim("userId",userService.getUserByEmail(authentication.getName()).getUserId())
-                .claim(AUTHORITIES_KEY,authentication.getAuthorities())
+//        authentication.getAuthorities().stream().findFirst().get()
+        UserDto userDto = userService.getUserByEmail(authentication.getName());
+        return  Jwts.builder()
+                .claim(USERNAME,userDto.getUsername())
+                .claim(USER_ID,userDto.getUserId())
+                .claim(AUTHORITIES_KEY,authentication.getAuthorities().stream().collect(Collectors.toList()).get(0).getAuthority()
+                )
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS512,JWT_SECRET)
                 .compact();
@@ -79,7 +87,7 @@ public class TokenProvider {
 
     public Authentication getAuthentication(String token){
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(extractAllClaims(token).get(AUTHORITIES_KEY).toString().split(","))
+                Arrays.stream(new String[]{extractAllClaims(token).get(AUTHORITIES_KEY).toString()})
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
         User principal = new User(extractUsername(token),"",authorities);
