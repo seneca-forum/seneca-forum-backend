@@ -33,7 +33,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
             sql.append("SELECT * FROM POSTS p LEFT JOIN(SELECT c.post_id AS belongPost,MAX(created_on)AS COMMENT FROM COMMENTS c GROUP BY belongPost) AS TEMP ");
         sql.append("ON TEMP.belongPost = p.post_id ")
             .append("WHERE p.topic_id = :topicId ")
-            .append("")
+            .append("AND p.status = 'accepted'")
             .append("AND p.post_tags LIKE :tags ")
             .append("ORDER BY IF(TEMP.COMMENT IS NULL, 1, 0),TEMP.COMMENT ").append(methodOrder)
             .append(",p.created_on ").append(methodOrder);
@@ -62,5 +62,12 @@ public class PostRepositoryImpl implements CustomPostRepository {
         return q.getResultList();
     }
 
+    @Override
+    public List<Post> getAllPostsOrderByPending() {
+        String sql = "SELECT * FROM POSTS p " +
+                "ORDER BY if(status='pending',0,if(status='accepted',1,2)),p.created_on ASC";
+        Query q = entityManager.createNativeQuery(sql.toString(),Post.class);
+        return q.getResultList();
+    }
 
 }

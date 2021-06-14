@@ -28,22 +28,15 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwtToken = tokenProvider.resolveToken(request);
-        try{
             //check if jwtToken is valid
-            if(Objects.nonNull(jwtToken) && tokenProvider.isValidated(jwtToken)) {
+            if(!Objects.isNull(jwtToken) && tokenProvider.isValidated(jwtToken)) {
                 // authentication
                 Authentication authentication = tokenProvider.getAuthentication(jwtToken);
                 // if user is valid, set it to the Security Context
-                if (Objects.nonNull(authentication)) {
+                if (!Objects.isNull(authentication)) {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
             filterChain.doFilter(request, response);
-        }
-        catch(Exception e){
-            log.error("failed on set user authentication", e);
-        }
-
     }
-
 }

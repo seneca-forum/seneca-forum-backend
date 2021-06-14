@@ -9,16 +9,19 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRepository{
 
-    @Query("FROM Post p WHERE p.topic = :topic " +
-            "AND (p.createdOn >= :startDate) " +
-            "AND (p.createdOn <= :endDate) " +
-            "AND (p.tags LIKE %:tags%)")
-    List<Post> findPostsByTopicBasedOnPost(Topic topic, String tags, Date startDate, Date endDate, Pageable pageable);
+    List<Post> findPostsByOrderByCreatedOnDesc();
 
+    @Query("FROM Post p WHERE p.topic =:topic " +
+            "AND (:startDate IS NULL OR p.createdOn >= :startDate) " +
+            "AND (:endDate IS NULL OR p.createdOn <= :endDate) " +
+            "AND (:tags IS NULL OR p.tags LIKE %:tags%) " +
+            "AND (p.status = 'accepted') ")
+    List<Post> findPostsByTopicBasedOnPost(Topic topic, String tags, Date startDate, Date endDate, Pageable pageable);
 
     @Query(value="select * from posts left outer join\n" +
             "(select comments.post_id, count(*)as noOfComments from comments group by comments.post_id)\n" +
@@ -34,9 +37,11 @@ public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRe
     @Query("FROM Post p where p.author.userId =:userId")
     List<Post>getAllPostsByUserId(String userId);
 
+    Integer countByStatusEquals(String status);
+
     // get all posts and order by status = pending ->accepted->deleted on created_on asc order
-    @Query(value = "select * from posts order by if(status=\"pending\",0,if(status=\"accepted\",1,2)),created_on asc"
-    , nativeQuery = true)
-    List<Post>getAllPostsOrderByPending();
+//    @Query(value = "select * from posts order by if(status=\"pending\",0,if(status=\"accepted\",1,2)),created_on asc"
+//    , nativeQuery = true)
+//    List<Post>getAllPostsOrderByPending();
 
 }

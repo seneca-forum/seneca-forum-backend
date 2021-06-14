@@ -28,13 +28,8 @@ public class TopicController {
 
 
     @GetMapping
-    public ResponseEntity<Set<Topic>> getAllTopics() {
-        List<Topic> topics = topicService.getAllTopics();
-        Set<Topic> topicSet = new HashSet<>();
-        for (Topic t : topics) {
-            topicSet.add(t);
-        }
-        return ResponseEntity.ok(topicSet);
+    public ResponseEntity<List<Topic>> getAllTopics() {
+        return ResponseEntity.ok(topicService.getAllTopics());
     }
 
     @GetMapping("/{topicId}/posts/size")
@@ -55,6 +50,7 @@ public class TopicController {
     ) {
         try{
             Topic topic = topicService.getTopicByTopicId(topicId);
+            List<PostViewDto> a =  postService.getAllPostByTopic(topic,order,s,e,p,sortBy,tags);
             return ResponseEntity.ok(
                     postService.getAllPostByTopic(topic,order,s,e,p,sortBy,tags));
         }

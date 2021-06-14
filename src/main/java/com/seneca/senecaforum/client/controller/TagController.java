@@ -1,7 +1,6 @@
 package com.seneca.senecaforum.client.controller;
 
 import com.seneca.senecaforum.domain.Tag;
-import com.seneca.senecaforum.domain.Topic;
 import com.seneca.senecaforum.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

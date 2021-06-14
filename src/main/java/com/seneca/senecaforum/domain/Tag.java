@@ -17,7 +17,7 @@ public class Tag implements Comparable<Tag>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
-    private Integer postId;
+    private Integer tagId;
 
     @Column(name = "tag_name",length = 50,unique = true)
     private String tagName;
