@@ -12,9 +12,11 @@ public interface UserRepository extends JpaRepository<UserEntity,String> {
 
     Optional<UserEntity> findByUsername(String username);
 
-    Integer countByUsernameEquals(String username);
+    boolean existsByUsername(String username);
 
-    Integer countByEmailEquals(String email);
+    boolean existsByEmail(String email);
+
+    boolean existsByUserId(String userId);
 
     @Query("FROM UserEntity u WHERE u.email = :email")
     Optional<UserEntity> findOneWithAuthoritiesByEmail(String email);

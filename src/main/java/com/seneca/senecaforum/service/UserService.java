@@ -31,11 +31,15 @@ public class UserService {
     }
 
     public boolean isUsernameUnique(String usr){
-        return userRepository.countByUsernameEquals(usr) > 0;
+        return userRepository.existsByUsername(usr);
+    }
+
+    public boolean isUserIdValid(String userId){
+        return userRepository.existsByUserId(userId);
     }
 
     public boolean isEmailUnique(String email){
-        return userRepository.countByEmailEquals(email) > 0;
+        return userRepository.existsByEmail(email);
     }
 
     public UserDto getUserByEmail(String email){
@@ -54,18 +58,6 @@ public class UserService {
         return MapperUtils.mapperObject(userRepository.save(savedUsr),UserDto.class);
     }
 
-
-    public String createNewToken(Authentication authentication, boolean rememberMe){
-        return tokenProvider.createToken(authentication, rememberMe);
-    }
-
-    public boolean isUserIdValid(String userId){
-        Optional<UserEntity>user = userRepository.findById(userId);
-        if(user.isPresent()){
-            return true;
-        }
-        return false;
-    }
     public UserEntity getUserByUserId(String userId){
         return userRepository.findById(userId).get();
     }

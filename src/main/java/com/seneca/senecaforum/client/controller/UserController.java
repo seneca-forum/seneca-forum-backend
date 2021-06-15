@@ -2,6 +2,7 @@ package com.seneca.senecaforum.client.controller;
 
 import com.seneca.senecaforum.client.exception.BadRequestException;
 import com.seneca.senecaforum.client.exception.InternalException;
+import com.seneca.senecaforum.client.exception.NotFoundException;
 import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Role;
 import com.seneca.senecaforum.domain.UserEntity;
@@ -35,9 +36,6 @@ public class UserController {
     @Autowired
     private RoleService roleService;
 
-    @Autowired
-    private PostService postService;
-
     @PostMapping()
     public ResponseEntity<UserDto> createNewUser(@RequestBody UserEntity usr) throws URISyntaxException {
         if (userService.isUsernameUnique(usr.getUsername())) {
@@ -52,47 +50,14 @@ public class UserController {
                 .body(userService.saveUser(usr));
     }
 
-    @GetMapping("/{userId}/posts")
-    public ResponseEntity<List<PostViewDto>> getAllPostsByUserId(@PathVariable("userId")  String userId) {
-        if(!userService.isUserIdValid(userId)){
-            throw new BadRequestException("Cannot find any users with userId "+userId);
-        }
-        List<Post>posts = postService.getAllPostsByUserId(userId);
-        List<PostViewDto>postDtos = MapperUtils.mapperList(posts,PostViewDto.class);
-        return ResponseEntity.ok(postDtos);
-    }
 
     @GetMapping("/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<UserDto> getUserByUserId(@PathVariable("userId")  String userId) {
-        UserDto usr = null;
-        try{
-            UserEntity userEntity = userService.getUserByUserId(userId);
-            usr = MapperUtils.mapperObject(userEntity,UserDto.class);
-        }
-        catch (Exception ex){
-            throw new InternalException("Cannot find any users with userId "+ userId);
-        }
-        return new ResponseEntity<>(usr, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{userId}/posts/{postId}")
-    public ResponseEntity getUserByUserId(
-            @PathVariable("userId")  String userId,
-            @PathVariable("postId")  int postId) {
-        UserDto usr = null;
         if(!userService.isUserIdValid(userId)){
-            throw new BadRequestException("Cannot find any users with userId "+userId);
+            throw new NotFoundException("Cannot find any users with userId "+userId);
         }
-        if(!postService.isPostIdValid(postId)){
-            throw new BadRequestException("Cannot find any post with postId "+postId);
-        }
-        try{
-            postService.deleteAPost(postId);
-        }
-        catch(Exception ex){
-            throw new InternalException("Cannot delete this post with postId "+postId+" !");
-        }
-        return new ResponseEntity(HttpStatus.OK);
+        UserDto usr = MapperUtils.mapperObject(userService.getUserByUserId(userId),UserDto.class);
+        return ResponseEntity.ok(usr);
     }
-
 }

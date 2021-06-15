@@ -20,6 +20,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true,securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private static final String[] USER_ALLOW_URLS = new String[]{
+            "/api/posts/user/**"
+    };
+
     @Autowired
     @Qualifier("userDetailsService")
     DomainUserDetailsService domainUserDetailsService;
@@ -49,6 +53,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/users/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/posts/**","/api/topics/**").permitAll()
+                .antMatchers(USER_ALLOW_URLS).hasRole("USER")
                 .antMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().apply(securityConfigureAdapter());
