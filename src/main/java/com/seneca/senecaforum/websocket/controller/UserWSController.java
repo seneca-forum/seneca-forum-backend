@@ -32,7 +32,6 @@ public class UserWSController {
     @GetMapping("/{currentUserId}")
     public ResponseEntity<List<OnlineUserDto>> getOnlineUsers(@PathVariable String currentUserId) {
         List<OnlineUserDto>usersWithStatus = new ArrayList<>();
-        List<OnlineUserDto>list = null;
 
         List<OnlineUserDto>offlineUsers = MapperUtils.mapperList(userService.getAllUsers(),OnlineUserDto.class);
         offlineUsers.stream().map(u->{
@@ -41,25 +40,31 @@ public class UserWSController {
         }).collect(Collectors.toList());
 
         try{
-            List<OnlineUserDto>onls = webSocketEventListener.getOnlineUsrs().stream().collect(Collectors.toList());
-            if(onls!=null){
+            Set<OnlineUserDto>onlsSet = webSocketEventListener.getOnlineUsrs();
+            if(onlsSet!=null){
+                List<OnlineUserDto>onls = onlsSet.stream().collect(Collectors.toList());
                 onls.forEach(o->{
                     int count = messageService.countNewMessagesFromOnlineUser(currentUserId, o.getUserId());
                     o.setNoOfNewMessages(count);
                     o.setStatus("ONLINE");
                 });
                 usersWithStatus.addAll(onls);
+                List<OnlineUserDto> finalOnls = onls;
+                offlineUsers.forEach(u->{
+                    if(finalOnls.stream().map(OnlineUserDto::getUsername).collect(Collectors.toList()).contains(u.getUsername())==false){
+                        usersWithStatus.add(u);
+                    }
+                });
             }
-            offlineUsers.forEach(u->{
-                if(onls.stream().map(OnlineUserDto::getUsername).collect(Collectors.toList()).contains(u.getUsername())==false){
-                    usersWithStatus.add(u);
-                }
-            });
+            else{
+                usersWithStatus.addAll(offlineUsers);
+            }
+
         }
         catch(Exception ex){
             throw new InternalException("Cannot get the number of online users");
         }
-        return new ResponseEntity<>(usersWithStatus, HttpStatus.OK);
+        return ResponseEntity.ok(usersWithStatus);
     }
 }
 
