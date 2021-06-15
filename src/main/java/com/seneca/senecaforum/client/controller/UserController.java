@@ -8,15 +8,19 @@ import com.seneca.senecaforum.domain.UserEntity;
 import com.seneca.senecaforum.service.PostService;
 import com.seneca.senecaforum.service.RoleService;
 import com.seneca.senecaforum.service.UserService;
+import com.seneca.senecaforum.service.constants.ApplicationConstants;
 import com.seneca.senecaforum.service.dto.PostViewDto;
 import com.seneca.senecaforum.service.dto.UserDto;
 import com.seneca.senecaforum.service.utils.MapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -34,24 +38,18 @@ public class UserController {
     @Autowired
     private PostService postService;
 
-    @PostMapping("/new")
-    public ResponseEntity<UserDto> createNewUser(@RequestBody UserEntity usr) {
-        Role role = roleService.getRoleByRoleName(usr.getRole().getRoleName());
-        if (role == null) {
-            throw new BadRequestException("Rolename " + usr.getRole().getRoleName() + "does not exist!");
+    @PostMapping()
+    public ResponseEntity<UserDto> createNewUser(@RequestBody UserEntity usr) throws URISyntaxException {
+        if (userService.isUsernameUnique(usr.getUsername())) {
+            throw new BadRequestException("Username already exists!");
         }
-        if (!userService.isUsernameUnique(usr.getUsername())) {
-            throw new BadRequestException("Username " + usr.getUsername() + " already exists!");
+        if (userService.isEmailUnique(usr.getEmail())) {
+            throw new BadRequestException("Email already exists!");
         }
-        UserEntity userEntity = null;
-        try {
-            usr.setRole(role);
-            userEntity = userService.saveUser(usr);
-        } catch (Exception e) {
-            throw new InternalException("Cannot save this user to the database");
-        }
-        UserDto savedUsr = MapperUtils.mapperObject(userEntity, UserDto.class);
-        return ResponseEntity.ok(savedUsr);
+        usr.setRole(roleService.getRoleByRoleName("ROLE_USER"));
+        return ResponseEntity.created(
+                new URI(ApplicationConstants.BASE_URL+"/posts/"+usr.getUserId()))
+                .body(userService.saveUser(usr));
     }
 
     @GetMapping("/{userId}/posts")

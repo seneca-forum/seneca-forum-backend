@@ -31,11 +31,11 @@ public class UserService {
     }
 
     public boolean isUsernameUnique(String usr){
-        Optional<UserEntity>user = userRepository.findByUsername(usr);
-        if(user.isPresent()){
-            return false;
-        }
-        return true;
+        return userRepository.countByUsernameEquals(usr) > 0;
+    }
+
+    public boolean isEmailUnique(String email){
+        return userRepository.countByEmailEquals(email) > 0;
     }
 
     public UserDto getUserByEmail(String email){
@@ -43,18 +43,15 @@ public class UserService {
         return MapperUtils.mapperObject(userEntity,UserDto.class);
     }
 
-    public UserEntity saveUser(UserEntity usr){
-        String rawPassword = usr.getPassword();
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-
+    public UserDto saveUser(UserEntity usr){
         UserEntity savedUsr = UserEntity.builder()
                 .createdOn(new Date())
                 .email(usr.getEmail())
-                .password(encodedPassword)
+                .password(passwordEncoder.encode(usr.getPassword()))
                 .role(usr.getRole())
                 .username(usr.getUsername())
                 .build();
-        return userRepository.save(savedUsr);
+        return MapperUtils.mapperObject(userRepository.save(savedUsr),UserDto.class);
     }
 
 

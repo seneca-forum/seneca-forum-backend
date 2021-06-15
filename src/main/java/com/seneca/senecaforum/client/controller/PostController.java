@@ -3,24 +3,29 @@ package com.seneca.senecaforum.client.controller;
 import com.seneca.senecaforum.client.exception.ErrorConstants;
 import com.seneca.senecaforum.client.exception.InternalException;
 import com.seneca.senecaforum.client.exception.NotFoundException;
-import com.seneca.senecaforum.domain.*;
-import com.seneca.senecaforum.service.*;
+import com.seneca.senecaforum.domain.Comment;
+import com.seneca.senecaforum.domain.Post;
+import com.seneca.senecaforum.domain.Topic;
+import com.seneca.senecaforum.domain.UserEntity;
+import com.seneca.senecaforum.service.PostService;
+import com.seneca.senecaforum.service.TagService;
+import com.seneca.senecaforum.service.TopicService;
+import com.seneca.senecaforum.service.UserService;
 import com.seneca.senecaforum.service.constants.ApplicationConstants;
 import com.seneca.senecaforum.service.dto.CommentDto;
 import com.seneca.senecaforum.service.dto.PostDetailDto;
 import com.seneca.senecaforum.service.dto.PostSearchDto;
 import com.seneca.senecaforum.service.dto.PostViewDto;
-import com.seneca.senecaforum.service.utils.MapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/posts")

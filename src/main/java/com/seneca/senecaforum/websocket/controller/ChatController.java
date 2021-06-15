@@ -1,6 +1,7 @@
 package com.seneca.senecaforum.websocket.controller;
 
 
+import com.seneca.senecaforum.client.exception.InternalException;
 import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.utils.MapperUtils;
 import com.seneca.senecaforum.websocket.config.WebSocketEventListener;
