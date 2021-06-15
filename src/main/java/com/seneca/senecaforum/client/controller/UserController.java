@@ -48,7 +48,7 @@ public class UserController {
         }
         usr.setRole(roleService.getRoleByRoleName("ROLE_USER"));
         return ResponseEntity.created(
-                new URI(ApplicationConstants.BASE_URL+"/posts/"+usr.getUserId()))
+                new URI(ApplicationConstants.BASE_URL+"/users/"+usr.getUserId()))
                 .body(userService.saveUser(usr));
     }
 
