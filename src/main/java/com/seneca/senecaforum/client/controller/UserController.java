@@ -34,7 +34,7 @@ public class UserController {
     @Autowired
     private PostService postService;
 
-    @PostMapping("/new")
+    @PostMapping()
     public ResponseEntity<UserDto> createNewUser(@RequestBody UserEntity usr) {
         Role role = roleService.getRoleByRoleName(usr.getRole().getRoleName());
         if (role == null) {

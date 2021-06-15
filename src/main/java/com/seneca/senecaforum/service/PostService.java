@@ -218,4 +218,8 @@ public class PostService {
     public boolean hasPending() {
         return postRepository.countByStatusEquals("pending") > 0;
     }
+
+    public Integer getNoOfAllPosts(){
+        return postRepository.findAll().size();
+    }
 }

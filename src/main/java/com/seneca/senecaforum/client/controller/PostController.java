@@ -144,4 +144,10 @@ public class PostController {
         return ResponseEntity.noContent().headers(headers).build();
     }
 
+    @GetMapping("/size")
+    public ResponseEntity<Integer>getNoOfAllPosts(){
+        Integer noOfAllPosts = postService.getNoOfAllPosts();
+        return ResponseEntity.ok(noOfAllPosts);
+    }
+
 }
