@@ -1,6 +1,5 @@
 package com.seneca.senecaforum.client.controller;
 
-import com.seneca.senecaforum.client.exception.BadRequestException;
 import com.seneca.senecaforum.client.exception.ErrorConstants;
 import com.seneca.senecaforum.client.exception.InternalException;
 import com.seneca.senecaforum.client.exception.NotFoundException;
@@ -13,7 +12,10 @@ import com.seneca.senecaforum.service.TagService;
 import com.seneca.senecaforum.service.TopicService;
 import com.seneca.senecaforum.service.UserService;
 import com.seneca.senecaforum.service.constants.ApplicationConstants;
-import com.seneca.senecaforum.service.dto.*;
+import com.seneca.senecaforum.service.dto.CommentDto;
+import com.seneca.senecaforum.service.dto.PostDetailDto;
+import com.seneca.senecaforum.service.dto.PostSearchDto;
+import com.seneca.senecaforum.service.dto.PostViewDto;
 import com.seneca.senecaforum.service.utils.MapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -149,19 +151,13 @@ public class PostController {
         return ResponseEntity.noContent().headers(headers).build();
     }
 
-    @GetMapping("/size")
-    public ResponseEntity<Integer>getNoOfAllPosts(){
-        Integer noOfAllPosts = postService.getNoOfAllPosts();
-        return ResponseEntity.ok(noOfAllPosts);
-    }
-
     @GetMapping("/user/{userId}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<List<PostViewDto>> getAllPostsByUserId(
             @PathVariable("userId") String userId
     ) {
         if(!userService.isUserIdValid(userId)){
-            throw new BadRequestException("Cannot find any users with userId "+userId);
+            throw new NotFoundException("Cannot find any users with userId "+userId);
         }
         List<Post>posts = postService.getAllPostsByUserId(userId);
         List<PostViewDto>postDtos = MapperUtils.mapperList(posts,PostViewDto.class);
@@ -173,11 +169,17 @@ public class PostController {
     public ResponseEntity<Void> deletePost(
             @PathVariable("postId")  int postId) throws URISyntaxException {
         if(!postService.isPostIdValid(postId)){
-            throw new BadRequestException("Cannot find any post with postId "+postId);
+            throw new NotFoundException("Cannot find any post with postId "+postId);
         }
         postService.deleteAPost(postId);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(ApplicationConstants.BASE_URL+"/posts/"+postId));
         return ResponseEntity.noContent().headers(headers).build();
+    }
+
+    @GetMapping("/size")
+    public ResponseEntity<Integer>getNoOfAllPosts(){
+        Integer noOfAllPosts = postService.getNoOfAllPosts();
+        return ResponseEntity.ok(noOfAllPosts);
     }
 }

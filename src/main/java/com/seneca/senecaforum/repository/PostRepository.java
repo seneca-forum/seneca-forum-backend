@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRepository{
@@ -38,10 +37,5 @@ public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRe
     List<Post>getAllPostsByUserId(String userId);
 
     Integer countByStatusEquals(String status);
-
-    // get all posts and order by status = pending ->accepted->deleted on created_on asc order
-//    @Query(value = "select * from posts order by if(status=\"pending\",0,if(status=\"accepted\",1,2)),created_on asc"
-//    , nativeQuery = true)
-//    List<Post>getAllPostsOrderByPending();
 
 }

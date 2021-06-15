@@ -130,6 +130,7 @@ public class PostService {
             post.setTags(p.getTags());
             post.setTitle(p.getTitle());
             post.setTopic(p.getTopic());
+            post.setEditedOn(new Date());
             return Optional.of(postRepository.save(post));
         }
         return Optional.empty();

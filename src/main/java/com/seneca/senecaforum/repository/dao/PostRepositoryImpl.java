@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,7 +64,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
     @Override
     public List<Post> getAllPostsOrderByPending() {
         String sql = "SELECT * FROM POSTS p " +
-                "ORDER BY if(status='pending',0,if(status='accepted',1,2)),p.created_on ASC";
+                "ORDER BY IF(status='pending',0,if(status='accepted',1,2)),p.created_on ASC";
         Query q = entityManager.createNativeQuery(sql.toString(),Post.class);
         return q.getResultList();
     }

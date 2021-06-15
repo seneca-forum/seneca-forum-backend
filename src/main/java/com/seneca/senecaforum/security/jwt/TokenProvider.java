@@ -1,16 +1,11 @@
 package com.seneca.senecaforum.security.jwt;
 
-import com.seneca.senecaforum.domain.UserEntity;
-import com.seneca.senecaforum.repository.RoleRepository;
-import com.seneca.senecaforum.repository.UserRepository;
 import com.seneca.senecaforum.service.UserService;
 import com.seneca.senecaforum.service.dto.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,11 +13,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
