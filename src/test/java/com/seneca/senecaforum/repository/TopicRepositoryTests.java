@@ -33,10 +33,9 @@ public class TopicRepositoryTests{
                 "Assignment Help",
                 "Exam Prep",
                 "Side Projects",
-                "Coop/ Internship",
+                "Coop/ Jobs",
                 "Dating",
-                "Coding Challenges",
-                "Jobs");
+                "Coding Challenges");
         for(String n:names){
             Topic topic = Topic.builder().topicName(n).build();
             topicRepository.save(topic);
