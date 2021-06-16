@@ -40,8 +40,8 @@ public class UserJWTController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(auth.getEmail(), auth.getPassword())
             );
-            auth.setRememberMe(!Objects.isNull(auth.getRememberMe()));
-            final String jwt = tokenProvider.createToken(authentication, auth.getRememberMe());
+            auth.setIsRememberMe(!Objects.isNull(auth.getIsRememberMe()));
+            final String jwt = tokenProvider.createToken(authentication, auth.getIsRememberMe());
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(ApplicationConstants.AUTHORIZATION_HEADER, "Bearer " + jwt);
             return new ResponseEntity<>(
