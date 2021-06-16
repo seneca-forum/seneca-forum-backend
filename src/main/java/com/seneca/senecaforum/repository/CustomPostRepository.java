@@ -13,4 +13,6 @@ public interface CustomPostRepository {
     List<Post> findPostsContainKeywords(String keyword);
 
     List<Post> getAllPostsOrderByPending();
+
+    List<Post> getAllPostsByUserIdOrderByPending(String userId);
 }

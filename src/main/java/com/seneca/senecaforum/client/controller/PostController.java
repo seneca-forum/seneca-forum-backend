@@ -30,6 +30,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/posts")
+@CrossOrigin("*")
 public class PostController {
     @Autowired
     private PostService postService;
@@ -57,19 +58,18 @@ public class PostController {
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Post>createNewPost(@RequestBody PostDetailDto p) throws URISyntaxException {
         if(p.getTags() == null || p.getTags().isEmpty()){
-            throw new InternalException("Cannot create new tags");
+            p.setTags("");
         }
-        else {
-            UserEntity userEntity = userService.getUserByUsername(p.getAuthor().getUsername());
-            Topic topic = topicService.getTopicByTopicId(p.getTopic().getTopicId());
-            Post post = postService.createNewPost(p, userEntity, topic);
+        UserEntity userEntity = userService.getUserByUsername(p.getAuthor().getUsername());
+        Topic topic = topicService.getTopicByTopicId(p.getTopic().getTopicId());
+        Post post = postService.createNewPost(p, userEntity, topic);
 
-            // store the tags
-            tagService.createTag(p.getTags());
-            return ResponseEntity.created(
-                    new URI(ApplicationConstants.BASE_URL+"posts/"+p.getPostId()))
-                    .body(post);
-        }
+        // store the tags
+        tagService.createTag(p.getTags());
+        return ResponseEntity.created(
+                new URI(ApplicationConstants.BASE_URL+"posts/"+p.getPostId()))
+                .body(post);
+
     }
 
     @PostMapping("/{postId}/comments")
@@ -159,7 +159,7 @@ public class PostController {
         if(!userService.isUserIdValid(userId)){
             throw new NotFoundException("Cannot find any users with userId "+userId);
         }
-        List<Post>posts = postService.getAllPostsByUserId(userId);
+        List<Post>posts = postService.getAllPostsByUserIdOrderByPending(userId);
         List<PostViewDto>postDtos = MapperUtils.mapperList(posts,PostViewDto.class);
         return ResponseEntity.ok(postDtos);
     }

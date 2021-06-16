@@ -19,7 +19,7 @@ public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRe
             "AND (:startDate IS NULL OR p.createdOn >= :startDate) " +
             "AND (:endDate IS NULL OR p.createdOn <= :endDate) " +
             "AND (:tags IS NULL OR p.tags LIKE %:tags%) " +
-            "AND (p.status = 'accepted') ")
+            "AND (p.status = 'ACCEPTED') ")
     List<Post> findPostsByTopicBasedOnPost(Topic topic, String tags, Date startDate, Date endDate, Pageable pageable);
 
     @Query(value="select * from posts left outer join\n" +
@@ -31,11 +31,15 @@ public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRe
 
     @Query(value = "select count(*) from posts where topic_id =:topicId",
             nativeQuery = true)
-    int getNoOfPostsByTopicId (String topicId);
+    Integer getNoOfPostsByTopicId (String topicId);
 
     @Query("FROM Post p where p.author.userId =:userId")
     List<Post>getAllPostsByUserId(String userId);
 
+    @Query("SELECT COUNT(*) FROM Post p where p.status =:status")
     Integer countByStatusEquals(String status);
+
+    @Query("SELECT SUM(p.views) FROM Post p WHERE p.topic.topicId =:topicId group by p.topic.topicId")
+    Integer getNoOfViewsByTopicId(String topicId);
 
 }

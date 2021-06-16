@@ -21,7 +21,7 @@ public class TopicRepositoryTests{
     @Test
     public void testCreateOneTopic(){
         String name = "Assignment Help";
-        Topic topic = Topic.builder().topicName(name).views(0).build();
+        Topic topic = Topic.builder().topicName(name).build();
         topicRepository.save(topic);
     }
 
@@ -33,12 +33,12 @@ public class TopicRepositoryTests{
                 "Assignment Help",
                 "Exam Prep",
                 "Side Projects",
-                "Coop/Internship",
-                "Volunteer",
+                "Coop/ Internship",
+                "Dating",
                 "Coding Challenges",
                 "Jobs");
         for(String n:names){
-            Topic topic = Topic.builder().topicName(n).views(0).build();
+            Topic topic = Topic.builder().topicName(n).build();
             topicRepository.save(topic);
         }
         int after = topicRepository.findAll().size();
@@ -50,28 +50,5 @@ public class TopicRepositoryTests{
         List<Topic> topics = topicRepository.findAll();
         assertThat(topics.size()).isGreaterThan(0);
     }
-
-
-    @Test
-    public void testUpdateViewByTopicId(){
-        Topic randomTopic = topicRepository.findAll().iterator().next();
-
-        int views = NumberStringUtils.generateRandomNumber(1,100);
-        randomTopic.setViews(views);
-        topicRepository.save(randomTopic);
-
-        Topic afterUpdate = topicRepository.findById(randomTopic.getTopicId()).get();
-        assertThat(afterUpdate.getViews()).isEqualTo(views);
-    }
-
-    @Test
-    public void testGetAllTopicsInDescendingViews(){
-        List<Topic> topics = topicRepository.findAll();
-        for(int i = 1; i < topics.size(); i++){
-            int value = topics.get(i).compareTo(topics.get(i-1));
-            assertTrue(value==0||value==1);
-        }
-    }
-
 
 }

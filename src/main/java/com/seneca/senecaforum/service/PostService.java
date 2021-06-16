@@ -88,11 +88,15 @@ public class PostService {
 
     public Post createNewPost (PostDetailDto p, UserEntity userEntity, Topic topic){
         // trick to avoid storing null in database, for query purposes
-        if(p.getTags()==null){
+        if(p.getTags()!=null && p.getTags()!=""){
+            p.setTags(p.getTags().toUpperCase(Locale.ROOT));
+        }
+        else{
             p.setTags("");
         }
         Post post = Post.builder()
                 .title(p.getTitle())
+                .status("ACCEPTED")
                 .content(p.getContent())
                 .createdOn(new Date())
                 .author(userEntity)
@@ -178,8 +182,8 @@ public class PostService {
         return searchDtos;
     }
 
-    public List<Post>getAllPostsByUserId(String userId){
-        return postRepository.getAllPostsByUserId(userId);
+    public List<Post>getAllPostsByUserIdOrderByPending(String userId){
+        return postRepository.getAllPostsByUserIdOrderByPending(userId);
     }
 
     public boolean isPostIdValid(int postId){
@@ -217,7 +221,7 @@ public class PostService {
     }
 
     public boolean hasPending() {
-        return postRepository.countByStatusEquals("pending") > 0;
+        return postRepository.countByStatusEquals("PENDING") > 0;
     }
 
     public Integer getNoOfAllPosts(){

@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Topic implements Comparable<Topic>{
+public class Topic{
     @Id
     @Column(name = "topic_id",updatable = false,nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "topic_gen")
@@ -28,13 +28,6 @@ public class Topic implements Comparable<Topic>{
     @Column(name = "topic_name",nullable = false,unique = true)
     private String topicName;
 
-    @Column(name = "views",nullable = false)
-    private Integer views;
 
-    @Override
-    public int compareTo(Topic o) {
-        int compareViews = o.getViews().compareTo(this.getViews());
-        return compareViews;
-    }
 
 }
