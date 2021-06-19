@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ws/messages")
-@CrossOrigin(origins = "*")
+@RequestMapping("/ws/messages")
 public class MessageController {
     @Autowired
     private MessageService messageService;

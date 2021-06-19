@@ -16,8 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/ws/users")
-@CrossOrigin(origins = "*")
+@RequestMapping("/ws/users")
 public class UserWSController {
     @Autowired
     WebSocketEventListener webSocketEventListener;

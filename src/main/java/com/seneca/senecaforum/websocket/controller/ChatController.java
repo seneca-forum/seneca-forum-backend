@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.Optional;
 
 @Controller
-@CrossOrigin("*")
 public class ChatController {
     @Autowired
     WebSocketEventListener auth;
