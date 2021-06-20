@@ -27,15 +27,15 @@ public class PostRepositoryImpl implements CustomPostRepository {
         methodOrder = (Objects.isNull(methodOrder) || methodOrder.equals("desc")) ? "DESC" : "ASC";
         StringBuilder sql = new StringBuilder();
         if (methodOrder.equals("ASC"))
-            sql.append("SELECT * FROM POSTS p LEFT JOIN(SELECT c.post_id AS belongPost,MIN(created_on)AS COMMENT FROM COMMENTS c GROUP BY belongPost) AS TEMP ");
+            sql.append("SELECT * FROM posts p LEFT JOIN(SELECT c.post_id AS belongPost,MIN(created_on)AS COMMENT FROM comments c GROUP BY belongPost) AS TEMP ");
         else
-            sql.append("SELECT * FROM POSTS p LEFT JOIN(SELECT c.post_id AS belongPost,MAX(created_on)AS COMMENT FROM COMMENTS c GROUP BY belongPost) AS TEMP ");
+            sql.append("SELECT * FROM posts p LEFT JOIN(SELECT c.post_id AS belongPost,MAX(created_on)AS COMMENT FROM comments c GROUP BY belongPost) AS TEMP ");
         sql.append("ON TEMP.belongPost = p.post_id ")
-            .append("WHERE p.topic_id = :topicId ")
-            .append("AND p.status = 'ACCEPTED'")
-            .append("AND p.post_tags LIKE :tags ")
-            .append("ORDER BY IF(TEMP.COMMENT IS NULL, 1, 0),TEMP.COMMENT ").append(methodOrder)
-            .append(",p.created_on ").append(methodOrder);
+                .append("WHERE p.topic_id = :topicId ")
+                .append("AND p.status = 'ACCEPTED'")
+                .append("AND p.post_tags LIKE :tags ")
+                .append("ORDER BY IF(TEMP.COMMENT IS NULL, 1, 0),TEMP.COMMENT ").append(methodOrder)
+                .append(",p.created_on ").append(methodOrder);
         int pageNumber = pageable.getPageNumber();
         int pageSize = pageable.getPageSize();
         Query q = entityManager.createNativeQuery(sql.toString(),Post.class);
