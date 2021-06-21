@@ -30,7 +30,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/posts")
-@CrossOrigin("*")
 public class PostController {
     @Autowired
     private PostService postService;
@@ -115,7 +114,6 @@ public class PostController {
             @RequestParam(defaultValue = "1") Integer page
     ){
         List<PostViewDto> viewPosts = postService.getHotPosts(page);
-        viewPosts.forEach(p->p.setNoOfComments(postService.getNoOfCommentsByPostId(p.getPostId())));
         return ResponseEntity.ok(viewPosts);
     }
 

@@ -63,7 +63,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
 
     @Override
     public List<Post> getAllPostsOrderByPending() {
-        String sql = "SELECT * FROM POSTS p " +
+        String sql = "SELECT * FROM posts p " +
                 "ORDER BY IF(status='PENDING',0,if(status='ACCEPTED',1,2)),p.created_on ASC";
         Query q = entityManager.createNativeQuery(sql,Post.class);
         return q.getResultList();
@@ -72,7 +72,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
     @Override
     public List<Post> getAllPostsByUserIdOrderByPending(String userId) {
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM POSTS p WHERE p.author_id = :userId ")
+        sql.append("SELECT * FROM posts p WHERE p.author_id = :userId ")
                 .append("ORDER BY IF(status='PENDING',0,if(status='ACCEPTED',1,2)),p.created_on ASC");
         Query q = entityManager.createNativeQuery(sql.toString(),Post.class);
         q.setParameter("userId",userId);

@@ -14,6 +14,8 @@ public class TopicDto {
 
     private String topicName;
 
+    private String topicDesc;
+
     private Integer views;
 
     private Integer noOfPosts;

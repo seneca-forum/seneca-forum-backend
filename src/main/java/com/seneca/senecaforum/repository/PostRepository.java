@@ -24,7 +24,7 @@ public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRe
 
     @Query(value="select * from posts left outer join\n" +
             "(select comments.post_id, count(*)as noOfComments from comments group by comments.post_id)\n" +
-            "as tempC on posts.post_id = tempC.post_id\n" +
+            "as tempC on posts.post_id = tempC.post_id where posts.status = 'ACCEPTED'\n" +
             "order by posts.views desc, tempC.noOfComments desc/*:pageable*/",
             nativeQuery = true)
     List<Post>getHotPosts(Pageable pageable);

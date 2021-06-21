@@ -28,6 +28,9 @@ public class Topic{
     @Column(name = "topic_name",nullable = false,unique = true)
     private String topicName;
 
+    @Column(name = "topic_desc",nullable = false)
+    private String topicDesc;
+
 
 
 }
