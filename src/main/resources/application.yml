@@ -3,9 +3,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://senecaforum.cvklzmyema33.us-east-2.rds.amazonaws.com/senecaforum?allowPublicKeyRetrieval=true&useSSL=false
-    username: root
-    password: abc123456
+    url: yourdbUrl
+    username: username
+    password: password
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
