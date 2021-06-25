@@ -95,18 +95,16 @@ public class PostController {
     public ResponseEntity<Post>editAPost(@RequestBody PostDetailDto p) throws URISyntaxException {
         // store the tags
         if(p.getTags() == null || p.getTags().isEmpty()){
-            throw new InternalException("Cannot create new tags");
-        }else {
-            Optional<Post> editedPost = postService.editAPost(p);
-            tagService.createTag(p.getTags());
-            HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(new URI(ApplicationConstants.BASE_URL+"/news/"+p.getPostId()));
-            if (editedPost.isEmpty()){
-                return ResponseEntity.noContent().headers(headers).build();
-            }else {
-                return ResponseEntity.ok(editedPost.get());
-            }
+            p.setTags("");
         }
+        Optional<Post> editedPost = postService.editAPost(p);
+        tagService.createTag(p.getTags());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(new URI(ApplicationConstants.BASE_URL+"/news/"+p.getPostId()));
+        if (editedPost.isEmpty()){
+            return ResponseEntity.noContent().headers(headers).build();
+        }
+        return ResponseEntity.ok(editedPost.get());
     }
 
     @GetMapping("/hot")
