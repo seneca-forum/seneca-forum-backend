@@ -25,7 +25,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![Product Name Screen Shot](src/assets/screenshot.png)
+![Product Name Screen Shot](screenshot.png)
 
 This project is a forum for Seneca students to chat with each other, post questions, comment to other's posts, search and filter posts by keywords. In addition, there's an admin console to manage all users' posts.
 
