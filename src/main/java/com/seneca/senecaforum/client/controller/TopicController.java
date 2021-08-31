@@ -8,6 +8,7 @@ import com.seneca.senecaforum.service.CommentService;
 import com.seneca.senecaforum.service.PostService;
 import com.seneca.senecaforum.service.TopicService;
 import com.seneca.senecaforum.service.dto.PostViewDto;
+import com.seneca.senecaforum.service.dto.PostsForumResult;
 import com.seneca.senecaforum.service.dto.TopicDto;
 import com.seneca.senecaforum.service.dto.TopicStatsDto;
 import com.seneca.senecaforum.service.utils.MapperUtils;
@@ -41,7 +42,7 @@ public class TopicController {
     }
 
     @GetMapping("/{topicId}/posts")//default:comment-desc
-    public ResponseEntity<List<PostViewDto>> getAllPostByTopic(
+    public ResponseEntity<PostsForumResult> getAllPostByTopic(
             @PathVariable String topicId,
             @RequestParam(required = false) String order,
             @RequestParam(required = false) String s,
@@ -51,10 +52,7 @@ public class TopicController {
             @RequestParam(required = false) String tags
     ) {
         try{
-            Topic topic = topicService.getTopicByTopicId(topicId);
-            List<PostViewDto> a =  postService.getAllPostByTopic(topic,order,s,e,p,sortBy,tags);
-            return ResponseEntity.ok(
-                    postService.getAllPostByTopic(topic,order,s,e,p,sortBy,tags));
+            return ResponseEntity.ok(postService.getAllPostByTopic(topicId,order,s,e,p,sortBy,tags));
         }
         catch(Exception ex){
             throw new NotFoundException("Topic "+ ErrorConstants.NOT_FOUND);
