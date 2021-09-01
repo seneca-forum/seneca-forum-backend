@@ -1,5 +1,6 @@
 package com.seneca.senecaforum.service.dto;
 
+import com.seneca.senecaforum.domain.Comment;
 import com.seneca.senecaforum.domain.Topic;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,8 +22,8 @@ public class PostViewDto {
     private Integer views;
     private UserDto author;
     private Topic topic;
-    private CommentDto lastComment;
-    private Integer noOfComments;
+    private CommentDto lastComment = null;
+    private Integer noOfComments = 0;
     private String status;
 
 }

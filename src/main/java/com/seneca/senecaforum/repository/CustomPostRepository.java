@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CustomPostRepository {
 
-    List<Post> findPostsByTopicBasedOnComment(Topic topic, String methodOrder, String tags, Pageable pageable);
+    List<Post> filterPostsBasedOnKeywords(String topicID, String tags, String start, String end, String sortBy, String order, Pageable pageable);
 
     List<Post> findPostsContainKeywords(String keyword);
 

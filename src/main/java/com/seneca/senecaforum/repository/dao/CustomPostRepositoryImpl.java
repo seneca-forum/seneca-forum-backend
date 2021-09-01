@@ -13,38 +13,41 @@ import java.util.List;
 import java.util.Objects;
 
 @Repository
-public class PostRepositoryImpl implements CustomPostRepository {
+public class CustomPostRepositoryImpl implements CustomPostRepository {
 
     private final EntityManager entityManager;
 
     @Autowired
-    public PostRepositoryImpl(EntityManager entityManager) {
+    public CustomPostRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager.getEntityManagerFactory().createEntityManager();
     }
     @Override
-    public List<Post> findPostsByTopicBasedOnComment(
-            Topic topic, String methodOrder, String tags, Pageable pageable) {
-        methodOrder = (Objects.isNull(methodOrder) || methodOrder.equals("desc")) ? "DESC" : "ASC";
-        StringBuilder sql = new StringBuilder();
-        if (methodOrder.equals("ASC"))
-            sql.append("SELECT * FROM posts p LEFT JOIN(SELECT c.post_id AS belongPost,MIN(created_on)AS COMMENT FROM comments c GROUP BY belongPost) AS TEMP ");
-        else
-            sql.append("SELECT * FROM posts p LEFT JOIN(SELECT c.post_id AS belongPost,MAX(created_on)AS COMMENT FROM comments c GROUP BY belongPost) AS TEMP ");
-        sql.append("ON TEMP.belongPost = p.post_id ")
-                .append("WHERE p.topic_id = :topicId ")
-                .append("AND p.status = 'ACCEPTED'")
-                .append("AND p.post_tags LIKE :tags ")
-                .append("ORDER BY IF(TEMP.COMMENT IS NULL, 1, 0),TEMP.COMMENT ").append(methodOrder)
-                .append(",p.created_on ").append(methodOrder);
+    public List<Post> filterPostsBasedOnKeywords(
+            String topicID, String tags, String start, String end, String sortBy, String order, Pageable pageable) {
+        String MINMAX = (order.equals("ASC") ? "MIN" : "MAX");
+        String tagStr = (tags==null?"\"%%\"":("\"%"+tags+"%\""));
+        end = end + "  23:59:59"; // get until the end of the day
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("SELECT * FROM posts p LEFT JOIN(SELECT c.post_id AS belongPost,").append(MINMAX)
+                .append("(created_on)AS COMMENT FROM comments c GROUP BY belongPost) AS TEMP ")
+                .append("ON TEMP.belongPost = p.post_id ")
+                .append("WHERE p.topic_id = '").append(topicID).append("'")
+                .append(" AND p.status = 'ACCEPTED'")
+                .append(" AND p.post_tags LIKE ").append(tagStr)
+                .append(" AND p.created_on >= \"").append(start).append("\"")
+                .append(" AND p.created_on <= \"").append(end).append("\"")
+                .append(" ORDER BY IF(TEMP.COMMENT IS NULL, 1, 0),TEMP.COMMENT ").append(order)
+                .append(",p.created_on ").append(order);
+
         int pageNumber = pageable.getPageNumber();
         int pageSize = pageable.getPageSize();
-        Query q = entityManager.createNativeQuery(sql.toString(),Post.class);
-        q.setParameter("topicId",topic.getTopicId());
-        q.setParameter("tags",Objects.isNull(tags) ? "%%" : "%"+tags+"%");
+        Query q = entityManager.createNativeQuery(sb.toString(),Post.class);
         q.setFirstResult(pageNumber * pageSize);
         q.setMaxResults(pageSize);
         return q.getResultList();
     }
+
 
     @Override
     public List<Post> findPostsContainKeywords(String keyword) {

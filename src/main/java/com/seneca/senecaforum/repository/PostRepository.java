@@ -15,6 +15,12 @@ public interface PostRepository extends JpaRepository<Post,Integer>,CustomPostRe
 
     List<Post> findPostsByOrderByCreatedOnDesc();
 
+    @Query(value = "SELECT * FROM posts p LEFT JOIN(SELECT c.post_id AS belongPost,MAX(created_on)AS COMMENT FROM comments c GROUP BY belongPost) AS TEMP \n" +
+            "ON TEMP.belongPost = p.post_id WHERE p.topic_id =:topicId\n" +
+            "AND p.status = 'ACCEPTED'\n" +
+            "ORDER BY IF(TEMP.COMMENT IS NULL, 1, 0),TEMP.COMMENT DESC,created_on desc", nativeQuery = true)
+    List<Post> findPostsByTopicIdSortedByLatestComment(String topicId, Pageable pageable);
+
     @Query("FROM Post p WHERE p.topic =:topic " +
             "AND (:startDate IS NULL OR p.createdOn >= :startDate) " +
             "AND (:endDate IS NULL OR p.createdOn <= :endDate) " +

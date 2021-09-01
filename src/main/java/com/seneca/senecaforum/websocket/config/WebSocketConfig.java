@@ -20,7 +20,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
                 .addEndpoint("/ws/**")
-                .setAllowedOrigins("http://senecaforum-frontend.s3-website.us-east-2.amazonaws.com")
+//                .setAllowedOrigins("http://senecaforum.s3-website.us-east-2.amazonaws.com")
+                .setAllowedOrigins("http://localhost:4200")
                 .withSockJS();
     }
 }

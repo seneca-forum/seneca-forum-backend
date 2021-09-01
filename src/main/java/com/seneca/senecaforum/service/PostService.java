@@ -1,26 +1,19 @@
 package com.seneca.senecaforum.service;
 
-import com.seneca.senecaforum.client.exception.BadRequestException;
 import com.seneca.senecaforum.domain.Comment;
 import com.seneca.senecaforum.domain.Post;
 import com.seneca.senecaforum.domain.Topic;
 import com.seneca.senecaforum.domain.UserEntity;
 import com.seneca.senecaforum.repository.PostRepository;
-import com.seneca.senecaforum.service.dto.CommentDto;
-import com.seneca.senecaforum.service.dto.PostDetailDto;
-import com.seneca.senecaforum.service.dto.PostSearchDto;
-import com.seneca.senecaforum.service.dto.PostViewDto;
-import com.seneca.senecaforum.service.utils.ApplicationUtils;
+import com.seneca.senecaforum.service.dto.*;
 import com.seneca.senecaforum.service.utils.ContentConverterUtils;
 import com.seneca.senecaforum.service.utils.MapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -28,52 +21,42 @@ public class PostService {
     private PostRepository postRepository;
 
 
-    public List<PostViewDto> getAllPostByTopic(
-            Topic topic,String methodOrder,String start,String end,int page,String sortBy,String tags
+    public PostsForumResult getAllPostByTopic(
+            String topicId,
+            String methodOrder,
+            String start,
+            String end,
+            int page,
+            String sortBy,
+            String tags
     ) throws ParseException {
-        List<Post> posts = null;
-        Date startDate = null;
-        Date endDate = null;
-        if (Objects.nonNull(start) && Objects.nonNull(end)) {
-            startDate = ApplicationUtils.convertToDate(start);
-            endDate = ApplicationUtils.convertToDate(end);
+        List<Post>posts = new ArrayList<>();
+        int noOfPosts = 0;
+        // without filtering
+        if (methodOrder == null && start == null && end == null && sortBy == null && tags == null) {
+            posts = this.postRepository.findPostsByTopicIdSortedByLatestComment(topicId, PageRequest.of(page-1,10));
+            noOfPosts = postRepository.getNoOfPostsByTopicId(topicId);
         }
-        boolean checkOrder = Objects.isNull(methodOrder);
-        if (Objects.nonNull(sortBy) && sortBy.equals("posts")) {
-            if (checkOrder || methodOrder.equals("desc"))
-                posts = postRepository.findPostsByTopicBasedOnPost(
-                        topic, tags, startDate, endDate,
-                        PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.DESC, "createdOn")));
-            else
-                posts = postRepository.findPostsByTopicBasedOnPost(
-                        topic, tags, startDate, endDate,
-                        PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.ASC, "createdOn")));
-        } else if (Objects.isNull(sortBy) || sortBy.equals("comments")) {
-            posts = postRepository.findPostsByTopicBasedOnComment(
-                    topic, methodOrder, tags, PageRequest.of(page - 1, 10));
+        // with filtering
+        else{
+            posts = this.postRepository.filterPostsBasedOnKeywords(topicId,tags,start, end, sortBy, methodOrder, PageRequest.of(page-1,10));
+            noOfPosts = posts.size();
         }
-        if (posts.size() == 0) {
-            return null;
-        }
-        List<PostViewDto> postPage = MapperUtils.mapperList(posts, PostViewDto.class);
-        for (int i = 0; i < posts.size(); ++i) {
-            int noOfComments = posts.get(i).getComments().size();
-            if (noOfComments == 0){
-                postPage.get(i).setNoOfComments(noOfComments);
-                continue;
-            }
-            if (Objects.isNull(methodOrder) || methodOrder.equals("desc")) {
-                postPage.get(i).setLastComment(
-                        MapperUtils.mapperObject(posts.get(i).getComments().get(noOfComments - 1), CommentDto.class));
-            } else {
-                postPage.get(i).setLastComment(
-                        MapperUtils.mapperObject(posts.get(i).getComments().get(0), CommentDto.class));
-            }
-            postPage.get(i).setNoOfComments(noOfComments);
-        }
-        return postPage;
 
+        List<PostViewDto>dtos = MapperUtils.mapperList(posts, PostViewDto.class);
+        for (int i = 0; i < dtos.size(); i++){
+            if(posts.get(i).getComments().size()>0){
+                CommentDto commentDto = MapperUtils.mapperObject(posts.get(i).getComments().get(0),CommentDto.class);
+                int noOfComments = posts.get(i).getComments().size();
+
+                dtos.get(i).setLastComment(commentDto);
+                dtos.get(i).setNoOfComments(noOfComments);
+            }
+
+        }
+        return PostsForumResult.builder().noOfPosts(noOfPosts).posts(dtos).build();
     }
+
 
     public Optional<Post> getPostByPostId(Integer postId){
         Optional<Post> postFind = postRepository.findById(postId);
@@ -143,7 +126,9 @@ public class PostService {
     public List<PostViewDto>getHotPosts(int page){
         List<Post>posts = postRepository.getHotPosts(PageRequest.of(page-1,10));
         List<PostViewDto>viewPosts = MapperUtils.mapperList(posts,PostViewDto.class);
-        viewPosts.forEach(p->p.setNoOfComments(getNoOfCommentsByPostId(p.getPostId())));
+        for(int i = 0; i < posts.size(); i++){
+            viewPosts.get(i).setNoOfComments(posts.get(i).getComments().size());
+        }
         return viewPosts;
     }
 
